@@ -61,7 +61,6 @@ function Basic() {
       .then((json) => {
         if (json.token) {
           auth.login(json.token);
-          localStorage.setItem("email", email);
           navigate("/dashboard", { replace: true });
         } else {
           setErroLogin(true);
@@ -84,7 +83,6 @@ function Basic() {
       .then((json) => {
         if (json.token) {
           auth.login(json.token);
-          localStorage.setItem("email", email);
           navigate("/dashboard", { replace: true });
         } else {
           setErroLogin(true);

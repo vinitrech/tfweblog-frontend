@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("email");
   };
 
   // eslint-disable-next-line react/jsx-no-constructed-context-values

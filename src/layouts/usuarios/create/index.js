@@ -33,6 +33,7 @@ import Select from "react-select";
 import MDTypography from "components/MDTypography";
 import MDAlert from "components/MDAlert";
 import CpfValidator from "utils/validateCpf";
+import { useAuth } from "utils/auth";
 
 function Tables() {
   const [email, setEmail] = useState("");
@@ -42,6 +43,7 @@ function Tables() {
   const [cargo, setCargo] = useState("");
   const [ativo, setActiveUpdate] = useState(true);
   const [erroCadastro, setErroCadastro] = useState(false);
+  const auth = useAuth();
 
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
@@ -60,6 +62,11 @@ function Tables() {
         alert("CPF inválido.");
       }
     }
+  };
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate("/login", { replace: true });
   };
 
   const handleSelect = (input) => {
@@ -86,11 +93,13 @@ function Tables() {
       body: JSON.stringify(cadastro),
     })
       .then((res) => {
-        if (res.status !== 204) {
-          setErroCadastro(true);
-        } else {
+        if (res.status === 204) {
           alert("Usuário criado com sucesso.");
           navigate("/usuarios", { replace: true });
+        } else if (res.status !== 401) {
+          setErroCadastro(true);
+        } else {
+          handleLogout();
         }
       })
       .catch();

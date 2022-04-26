@@ -31,15 +31,23 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DataTable from "examples/Tables/DataTable";
 
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
 import { CircularProgress, Icon } from "@mui/material";
 import MDInput from "components/MDInput";
+import { useAuth } from "utils/auth";
 
 function Tables() {
   const API_URL = process.env.REACT_APP_API_URL;
   const [isLoading, setLoading] = useState(true);
   const [items, setItems] = useState();
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate("/login", { replace: true });
+  };
 
   const buscaItens = () => {
     fetch(API_URL + "/usuarios", {
@@ -49,12 +57,16 @@ function Tables() {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     })
-      .then((response) => response.json())
       .then((response) => {
-        setItems(response);
-        setLoading(false);
-      })
-      .catch();
+        if(response.status !== 401){
+          response.json().then((itemsArray) => {
+            setItems(itemsArray);
+            setLoading(false);
+          })
+        }else{
+          handleLogout()
+        }
+      }).catch();
   }
 
   useEffect(() => {
@@ -78,6 +90,8 @@ function Tables() {
             alert("Registro excluído com sucesso.");
             setLoading(true);
             buscaItens();
+          }else if(response.status === 401){
+            handleLogout()
           }
         })
         .catch();
