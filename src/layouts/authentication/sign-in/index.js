@@ -51,12 +51,11 @@ function Basic() {
 
   const responseGoogle = (res) => {
     setErroLogin(false);
-    const emailInput = res.profileObj.email;
 
     fetch(API_URL + "/auth/google", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: emailInput }),
+      body: JSON.stringify({ email: res.profileObj.email }),
     })
       .then((response) => response.json())
       .then((json) => {

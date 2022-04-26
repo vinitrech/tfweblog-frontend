@@ -37,7 +37,6 @@ export const RequireAuth = ({ children }) => {
 };
 
 export const RequireNoAuth = ({ children }) => {
-  verificaToken();
   if (localStorage.getItem("token")) {
     return <Navigate to="/dashboard" />;
   }
