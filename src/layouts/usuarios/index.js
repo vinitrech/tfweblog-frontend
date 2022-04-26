@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-else-return */
 /* eslint-disable prettier/prettier */
@@ -40,8 +41,7 @@ function Tables() {
   const [isLoading, setLoading] = useState(true);
   const [items, setItems] = useState();
 
-  useEffect(() => {
-    document.title = "TFWebLog - Usuários";
+  const buscaItens = () => {
     fetch(API_URL + "/usuarios", {
       method: "GET",
       headers: {
@@ -55,7 +55,34 @@ function Tables() {
         setLoading(false);
       })
       .catch();
+  }
+
+  useEffect(() => {
+    document.title = "TFWebLog - Usuários";
+    buscaItens();
   }, []);
+
+  const handleErase = (e, id) => {
+    e.preventDefault();
+
+    if (confirm("Deseja realmente excluir o registro?")) {
+      fetch(API_URL + "/usuarios/" + id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+        .then((response) => {
+          if (response.status === 204) {
+            alert("Registro excluído com sucesso.");
+            setLoading(true);
+            buscaItens();
+          }
+        })
+        .catch();
+    }
+  };
 
   if (isLoading) {
     return (
@@ -114,7 +141,13 @@ function Tables() {
                 </Icon>
               </MDButton>
             </Link>
-            <MDButton variant="gradient" color="error">
+            <MDButton
+              variant="gradient"
+              color="error"
+              onClick={(e) => {
+                handleErase(e, item.id);
+              }}
+            >
               <Icon fontSize="medium" color="inherit">
                 delete
               </Icon>
