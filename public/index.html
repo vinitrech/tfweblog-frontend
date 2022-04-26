@@ -1,0 +1,180 @@
+<!--
+=========================================================
+* Material Dashboard 2 PRO React - v3.0.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-pro-react
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+Software.
+-->
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#143D59" />
+    <link rel="apple-touch-icon" sizes="76x76" href="%PUBLIC_URL%/favicon.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>TF WebLog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;1,100;1,200;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link
+      href="styles.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      *{
+      font-family: "Poppins", sans-serif;
+  }
+
+  .mainColor{
+      color: #143D59 !important;
+  }
+
+  .mainColorBackground{
+      background-color: #143D59 !important;
+  }   
+
+  .boxFormDashboard{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  .boxFormDashboardMargin{
+      margin-right: 15px;
+  }
+
+  .wrapperHeader{
+      display: flex;
+      justify-content: space-between;
+  }
+
+  .wrapperHeader form{
+      display: flex;
+      align-items: center;
+  }
+
+  .wrapperHeader input{
+      width: 300px;
+  }
+
+  .wrapperHeader button{
+      padding: 7px 21px;
+  }
+
+  .searchButtonWrapper{
+      margin: 0;
+  }
+
+  .exportLink{
+      margin-right: 10px;
+  }
+
+  .exportLinkInternal{
+      margin: 0 5px;
+  }
+
+  .exportLinkInternal button{
+      padding: 0 !important;
+      width: 35px;
+      min-width: 35px;
+      min-height: 30px;
+      height: 30px;
+  }
+
+  .searchButton{
+      margin-left: 10px;
+  }
+
+  .wrapperHeader form button{
+      padding: 0 !important;
+      min-width: 40px;
+      min-height: 40px;
+      height: 40px;
+      width: 40px;
+  }
+
+  .defaultBtns{
+      padding: 0 !important;
+      min-width: 40px;
+      min-height: 40px;
+      height: 40px;
+      width: 40px;
+  }
+
+  .badgeInternal{
+      position: absolute !important;
+      top: -7px;
+      right: -7px;
+  }
+
+  .btnGoogleLogin{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  @media(max-width: 767px){
+    .boxFormDashboard{
+        flex-direction: column;
+    }
+
+    .boxFormDashboardMargin{
+        margin-right: 0;
+    }
+
+    .wrapperHeader{
+        flex-direction: column;
+    }
+
+    .wrapperHeader .inputWrapper {
+        width: 100%;
+    }
+
+    .wrapperHeader .inputWrapperInternal {
+        width: 100%;
+    }
+
+    .wrapperHeader input{
+        width: 100%;
+    }
+
+    .wrapperHeader form{
+        margin-top: 30px;
+        justify-content: center;
+    }
+  }
+
+      .paddingPermissions{
+        padding-top: 0px !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
