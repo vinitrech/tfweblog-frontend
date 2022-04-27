@@ -41,6 +41,7 @@ function Tables() {
   const API_URL = process.env.REACT_APP_API_URL;
   const [isLoading, setLoading] = useState(true);
   const [items, setItems] = useState();
+  const [searchInput, setSearchInput] = useState("");
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -48,6 +49,39 @@ function Tables() {
     auth.logout();
     navigate("/login", { replace: true });
   };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+
+    fetch(
+      API_URL +
+        "/usuarios?" +
+        new URLSearchParams({
+          search: searchInput,
+        }),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    )
+      .then((response) => {
+        if (response.status !== 401) {
+          response.json().then((itemsArray) => {
+            console.log(itemsArray);
+            setItems(itemsArray);
+            setLoading(false);
+          });
+        } else {
+          handleLogout();
+        }
+      })
+      .catch();
+  }
 
   const buscaItens = () => {
     fetch(API_URL + "/usuarios", {
@@ -58,16 +92,17 @@ function Tables() {
       },
     })
       .then((response) => {
-        if(response.status !== 401){
+        if (response.status !== 401) {
           response.json().then((itemsArray) => {
             setItems(itemsArray);
             setLoading(false);
-          })
-        }else{
-          handleLogout()
+          });
+        } else {
+          handleLogout();
         }
-      }).catch();
-  }
+      })
+      .catch();
+  };
 
   useEffect(() => {
     document.title = "TFWebLog - Usuários";
@@ -90,8 +125,8 @@ function Tables() {
             alert("Registro excluído com sucesso.");
             setLoading(true);
             buscaItens();
-          }else if(response.status === 401){
-            handleLogout()
+          } else if (response.status === 401) {
+            handleLogout();
           }
         })
         .catch();
@@ -181,7 +216,7 @@ function Tables() {
             </MDButton>
           </Link>
 
-          <MDBox component="form" role="form">
+          <MDBox component="form" role="form" onSubmit={(e) => handleSearchSubmit(e)}>
             <Link to="/usuarios" className="exportLink">
               <MDButton variant="gradient" color="primary">
                 <Icon fontSize="medium" color="inherit">
@@ -190,16 +225,21 @@ function Tables() {
               </MDButton>
             </Link>
             <MDBox className="inputWrapper">
-              <MDInput type="text" label="Buscar..." className="inputWrapperInternal" />
+              <MDInput
+                type="text"
+                required
+                value={searchInput}
+                label="Buscar..."
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="inputWrapperInternal"
+              />
             </MDBox>
-            <MDBox>
-              <Link to="/usuarios" className="searchButton">
-                <MDButton variant="gradient" color="primary">
-                  <Icon fontSize="medium" color="inherit">
-                    search
-                  </Icon>
-                </MDButton>
-              </Link>
+            <MDBox className="searchButton">
+              <MDButton type="submit" variant="gradient" color="primary">
+                <Icon fontSize="medium" color="inherit">
+                  search
+                </Icon>
+              </MDButton>
             </MDBox>
           </MDBox>
         </MDBox>
