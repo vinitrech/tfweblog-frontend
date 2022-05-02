@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
@@ -44,11 +45,70 @@ import exportFromJSON from "export-from-json";
 function Usuarios() {
   const API_URL = process.env.REACT_APP_API_URL;
   const [isLoading, setLoading] = useState(true);
-  const [items, setItems] = useState();
   const [data, setData] = useState();
   const [searchInput, setSearchInput] = useState("");
   const auth = useAuth();
   const navigate = useNavigate();
+  const columns = [
+    { Header: "identificador", accessor: "identificador", align: "center" },
+    { Header: "email", accessor: "email", align: "left" },
+    { Header: "data", accessor: "data", align: "center" },
+    { Header: "ativo", accessor: "ativo", align: "center" },
+    { Header: "ações", accessor: "acoes", align: "center", disableSortBy: true },
+  ];
+
+  const [rows, setRows] = useState([]);
+
+  const handleRows = (itemsArray) => {
+    const temporaryRows = [];
+
+    itemsArray.map((item) => {
+      let date = new Date(item.created_at);
+      date =
+        date.getDate() +
+        "/" +
+        (date.getMonth() + 1) +
+        "/" +
+        date.getFullYear() +
+        " " +
+        date.getHours() +
+        ":" +
+        date.getMinutes() +
+        ":" +
+        date.getSeconds();
+  
+      temporaryRows.push({
+        identificador: item.id,
+        email: item.email,
+        data: date,
+        ativo: !item.ativo ? "Não" : "Sim",
+        acoes: (
+          <MDBox className="exportLinkInternal">
+            <Link to={"/usuarios/" + item.id + "/editar-usuario"} className="exportLinkInternal">
+              <MDButton variant="gradient" color="primary">
+                <Icon fontSize="medium" color="inherit">
+                  edit
+                </Icon>
+              </MDButton>
+            </Link>
+            <MDButton
+              variant="gradient"
+              color="error"
+              onClick={(e) => {
+                handleErase(e, item.id);
+              }}
+            >
+              <Icon fontSize="medium" color="inherit">
+                delete
+              </Icon>
+            </MDButton>
+          </MDBox>
+        ),
+      });
+
+      setRows(temporaryRows);
+    });
+  }
 
   const exportName = "Usuários";
   const type = "xls";
@@ -115,8 +175,8 @@ function Usuarios() {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
-            setItems(itemsArray);
             setItemsToExport(itemsArray);
+            handleRows(itemsArray);
             setLoading(false);
           });
         } else {
@@ -137,8 +197,8 @@ function Usuarios() {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
-            setItems(itemsArray);
             setItemsToExport(itemsArray);
+            handleRows(itemsArray);
             setLoading(false);
           });
         } else {
@@ -195,61 +255,6 @@ function Usuarios() {
       </DashboardLayout>
     );
   } else {
-    const columns = [
-      { Header: "identificador", accessor: "identificador", align: "center" },
-      { Header: "email", accessor: "email", align: "left" },
-      { Header: "data", accessor: "data", align: "center" },
-      { Header: "ativo", accessor: "ativo", align: "center" },
-      { Header: "ações", accessor: "acoes", align: "center", disableSortBy: true },
-    ];
-
-    const rows = [];
-
-    items.map((item) => {
-      let date = new Date(item.created_at);
-      date =
-        date.getDate() +
-        "/" +
-        (date.getMonth() + 1) +
-        "/" +
-        date.getFullYear() +
-        " " +
-        date.getHours() +
-        ":" +
-        date.getMinutes() +
-        ":" +
-        date.getSeconds();
-
-      rows.push({
-        identificador: item.id,
-        email: item.email,
-        data: date,
-        ativo: !item.ativo ? "Não" : "Sim",
-        acoes: (
-          <MDBox className="exportLinkInternal">
-            <Link to={"/usuarios/" + item.id + "/editar-usuario"} className="exportLinkInternal">
-              <MDButton variant="gradient" color="primary">
-                <Icon fontSize="medium" color="inherit">
-                  edit
-                </Icon>
-              </MDButton>
-            </Link>
-            <MDButton
-              variant="gradient"
-              color="error"
-              onClick={(e) => {
-                handleErase(e, item.id);
-              }}
-            >
-              <Icon fontSize="medium" color="inherit">
-                delete
-              </Icon>
-            </MDButton>
-          </MDBox>
-        ),
-      });
-    });
-
     return (
       <DashboardLayout>
         <DashboardNavbar />
