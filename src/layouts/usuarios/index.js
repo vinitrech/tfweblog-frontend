@@ -1,3 +1,6 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-else-return */
@@ -36,14 +39,54 @@ import MDButton from "components/MDButton";
 import { CircularProgress, Icon } from "@mui/material";
 import MDInput from "components/MDInput";
 import { useAuth } from "utils/auth";
+import exportFromJSON from "export-from-json";
 
-function Tables() {
+function Usuarios() {
   const API_URL = process.env.REACT_APP_API_URL;
   const [isLoading, setLoading] = useState(true);
   const [items, setItems] = useState();
+  const [data, setData] = useState();
   const [searchInput, setSearchInput] = useState("");
   const auth = useAuth();
   const navigate = useNavigate();
+
+  const exportName = "Usuários";
+  const type = "xls";
+
+  const handleExportXlsx = () => {
+    exportFromJSON({ data, fileName: exportName, exportType: type });
+  };
+
+  const setItemsToExport = (itemsArray) => {
+    const arrayOfItems = [];
+
+    itemsArray.map((item) => {
+      let date = new Date(item.created_at);
+      date =
+        date.getDate() +
+        "/" +
+        (date.getMonth() + 1) +
+        "/" +
+        date.getFullYear() +
+        " " +
+        date.getHours() +
+        ":" +
+        date.getMinutes() +
+        ":" +
+        date.getSeconds();
+
+      arrayOfItems.push({
+        identificador: item.id,
+        email: item.email,
+        nome: item.nome,
+        cpf: item.cpf,
+        data: date,
+        ativo: !item.ativo ? "Não" : "Sim",
+      });
+    });
+
+    setData(arrayOfItems);
+  };
 
   const handleLogout = () => {
     auth.logout();
@@ -72,8 +115,8 @@ function Tables() {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
-            console.log(itemsArray);
             setItems(itemsArray);
+            setItemsToExport(itemsArray);
             setLoading(false);
           });
         } else {
@@ -81,7 +124,7 @@ function Tables() {
         }
       })
       .catch();
-  }
+  };
 
   const buscaItens = () => {
     fetch(API_URL + "/usuarios", {
@@ -95,6 +138,7 @@ function Tables() {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
             setItems(itemsArray);
+            setItemsToExport(itemsArray);
             setLoading(false);
           });
         } else {
@@ -156,7 +200,7 @@ function Tables() {
       { Header: "email", accessor: "email", align: "left" },
       { Header: "data", accessor: "data", align: "center" },
       { Header: "ativo", accessor: "ativo", align: "center" },
-      { Header: "ações", accessor: "acoes", align: "center" },
+      { Header: "ações", accessor: "acoes", align: "center", disableSortBy: true },
     ];
 
     const rows = [];
@@ -216,14 +260,24 @@ function Tables() {
             </MDButton>
           </Link>
 
-          <MDBox component="form" role="form" onSubmit={(e) => handleSearchSubmit(e)}>
-            <Link to="/usuarios" className="exportLink">
-              <MDButton variant="gradient" color="primary">
-                <Icon fontSize="medium" color="inherit">
-                  file_open
-                </Icon>
-              </MDButton>
-            </Link>
+          <MDBox
+            component="form"
+            role="form"
+            onSubmit={(e) => handleSearchSubmit(e)}
+            className="exportLink"
+          >
+            <MDButton
+              variant="gradient"
+              color="primary"
+              onClick={handleExportXlsx}
+              sx={() => ({
+                marginRight: "10px",
+              })}
+            >
+              <Icon fontSize="medium" color="inherit">
+                file_open
+              </Icon>
+            </MDButton>
             <MDBox className="inputWrapper">
               <MDInput
                 type="text"
@@ -250,7 +304,6 @@ function Tables() {
                 <MDBox pt={3}>
                   <DataTable
                     table={{ columns, rows }}
-                    isSorted={false}
                     entriesPerPage
                     showTotalEntries={false}
                     noEndBorder
@@ -265,4 +318,4 @@ function Tables() {
   }
 }
 
-export default Tables;
+export default Usuarios;

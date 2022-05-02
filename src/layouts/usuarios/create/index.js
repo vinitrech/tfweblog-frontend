@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-template */
 /**
@@ -35,7 +36,7 @@ import MDAlert from "components/MDAlert";
 import CpfValidator from "utils/validateCpf";
 import { useAuth } from "utils/auth";
 
-function Tables() {
+function UsuariosCreate() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
@@ -251,4 +252,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default UsuariosCreate;

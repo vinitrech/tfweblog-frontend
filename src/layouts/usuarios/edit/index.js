@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-else-return */
 /* eslint-disable prefer-template */
 /**
@@ -35,7 +36,7 @@ import CpfValidator from "utils/validateCpf";
 import { useAuth } from "utils/auth";
 import MDAlert from "components/MDAlert";
 
-function Tables() {
+function UsuariosEdit() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
@@ -300,4 +301,4 @@ function Tables() {
   }
 }
 
-export default Tables;
+export default UsuariosEdit;
