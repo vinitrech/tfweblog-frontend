@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable prefer-template */
 /**
 =========================================================
 * Material Dashboard 2 React - v2.1.0
@@ -44,6 +46,7 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "context";
+import { useAuth } from "utils/auth";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -73,11 +76,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
+  const auth = useAuth();
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ name, icon, key, show, route }) => {
+  const renderRoutes = routes.map(({ name, icon, key, show, allowedRoles, route }) => {
     let returnValue;
 
-    if (show === true) {
+    if (show === true && allowedRoles !== undefined && allowedRoles.includes(auth.role)) {
       returnValue = (
         <NavLink key={key} to={route}>
           <SidenavCollapse name={name} icon={icon} active={key === collapseName} />

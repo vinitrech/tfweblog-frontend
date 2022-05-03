@@ -72,6 +72,7 @@ const routes = [
     name: "Dashboard",
     key: "dashboard",
     show: true,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: (
@@ -85,6 +86,7 @@ const routes = [
     name: "Transportes",
     key: "transportes",
     show: true,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes",
     component: (
@@ -98,6 +100,7 @@ const routes = [
     name: "Criar Transporte",
     key: "criar-transporte",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/criar-transporte",
     component: (
       <RequireAuth>
@@ -110,6 +113,7 @@ const routes = [
     name: "Editar Transporte",
     key: "editar-transporte",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:id/editar-transporte",
     component: (
       <RequireAuth>
@@ -122,6 +126,7 @@ const routes = [
     name: "Documentos",
     key: "documentos",
     show: false,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/documentos",
     component: (
@@ -135,6 +140,7 @@ const routes = [
     name: "Criar Documento",
     key: "criar-documento",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/documentos/criar-documento",
     component: (
       <RequireAuth>
@@ -147,6 +153,7 @@ const routes = [
     name: "Editar Documento",
     key: "editar-documento",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/documentos/:id/editar-documento",
     component: (
       <RequireAuth>
@@ -159,6 +166,7 @@ const routes = [
     name: "Avisos",
     key: "avisos",
     show: false,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/avisos",
     component: (
@@ -172,6 +180,7 @@ const routes = [
     name: "Criar Aviso",
     key: "criar-aviso",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/avisos/criar-aviso",
     component: (
       <RequireAuth>
@@ -184,6 +193,7 @@ const routes = [
     name: "Editar Aviso",
     key: "editar-aviso",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/avisos/:id/editar-aviso",
     component: (
       <RequireAuth>
@@ -196,6 +206,7 @@ const routes = [
     name: "Visualizar Aviso",
     key: "visualizar-aviso",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/avisos/:id/visualizar-aviso",
     component: (
       <RequireAuth>
@@ -208,6 +219,7 @@ const routes = [
     name: "Incidentes",
     key: "incidentes",
     show: false,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/incidentes",
     component: (
@@ -221,6 +233,7 @@ const routes = [
     name: "Criar Incidente",
     key: "criar-incidente",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/incidentes/criar-incidente",
     component: (
       <RequireAuth>
@@ -233,6 +246,7 @@ const routes = [
     name: "Editar Incidente",
     key: "editar-incidente",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/incidentes/:id/editar-incidente",
     component: (
       <RequireAuth>
@@ -245,6 +259,7 @@ const routes = [
     name: "Visualizar Incidente",
     key: "visualizar-incidente",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/incidentes/:id/visualizar-incidente",
     component: (
       <RequireAuth>
@@ -257,6 +272,7 @@ const routes = [
     name: "Avaliações",
     key: "avaliacoes",
     show: false,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/avaliacoes",
     component: (
@@ -270,6 +286,7 @@ const routes = [
     name: "Criar Avaliação",
     key: "criar-avaliacao",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/avaliacoes/criar-avaliacao",
     component: (
       <RequireAuth>
@@ -282,6 +299,7 @@ const routes = [
     name: "Editar Avaliação",
     key: "editar-avaliacao",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/avaliacoes/:id/editar-avaliacao",
     component: (
       <RequireAuth>
@@ -294,6 +312,7 @@ const routes = [
     name: "Visualizar Avaliação",
     key: "visualizar-avaliacao",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/transportes/:idTransporte/avaliacoes/:id/visualizar-avaliacao",
     component: (
       <RequireAuth>
@@ -306,6 +325,7 @@ const routes = [
     name: "Categorias",
     key: "categorias",
     show: true,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">list</Icon>,
     route: "/categorias",
     component: (
@@ -319,6 +339,7 @@ const routes = [
     name: "Criar Categoria",
     key: "criar-categoria",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/categorias/criar-categoria",
     component: (
       <RequireAuth>
@@ -331,6 +352,7 @@ const routes = [
     name: "Editar Categoria",
     key: "editar-categoria",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/categorias/:id/editar-categoria",
     component: (
       <RequireAuth>
@@ -343,6 +365,7 @@ const routes = [
     name: "Clientes",
     key: "clientes",
     show: true,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">group</Icon>,
     route: "/clientes",
     component: (
@@ -356,6 +379,7 @@ const routes = [
     name: "Criar Cliente",
     key: "criar-cliente",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/clientes/criar-cliente",
     component: (
       <RequireAuth>
@@ -368,6 +392,7 @@ const routes = [
     name: "Editar Cliente",
     key: "editar-cliente",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/clientes/:id/editar-cliente",
     component: (
       <RequireAuth>
@@ -380,6 +405,7 @@ const routes = [
     name: "Veículos",
     key: "veiculos",
     show: true,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">garage</Icon>,
     route: "/veiculos",
     component: (
@@ -393,6 +419,7 @@ const routes = [
     name: "Criar Veículo",
     key: "criar-veiculo",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/veiculos/criar-veiculo",
     component: (
       <RequireAuth>
@@ -405,6 +432,7 @@ const routes = [
     name: "Editar Veículo",
     key: "editar-veiculo",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/veiculos/:id/editar-veiculo",
     component: (
       <RequireAuth>
@@ -417,6 +445,7 @@ const routes = [
     name: "Usuários",
     key: "usuarios",
     show: true,
+    allowedRoles: ["administrador"],
     icon: <Icon fontSize="small">account_circle</Icon>,
     route: "/usuarios",
     component: (
@@ -430,6 +459,7 @@ const routes = [
     name: "Criar Usuário",
     key: "criar-usuario",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/usuarios/criar-usuario",
     component: (
       <RequireAuth>
@@ -442,6 +472,7 @@ const routes = [
     name: "Editar Usuário",
     key: "editar-usuario",
     show: false,
+    allowedRoles: ["administrador"],
     route: "/usuarios/:id/editar-usuario",
     component: (
       <RequireAuth>
