@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-template */
@@ -36,7 +38,7 @@ import MDAlert from "components/MDAlert";
 import CpfValidator from "utils/validateCpf";
 import { useAuth } from "utils/auth";
 
-function UsuariosCreate() {
+function UsuariosCreate({allowedRoles}) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
@@ -108,6 +110,18 @@ function UsuariosCreate() {
 
   useEffect(() => {
     document.title = "TFWebLog - Criar Usuário";
+
+    fetch(API_URL + "/getData", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (!allowedRoles.includes(json.cargo)) {
+          navigate("/login", { replace: true });
+        }
+      })
+      .catch();
   }, []);
 
   const options = [

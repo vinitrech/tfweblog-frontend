@@ -450,7 +450,7 @@ const routes = [
     route: "/usuarios",
     component: (
       <RequireAuth>
-        <Usuarios />
+        <Usuarios allowedRoles={["administrador"]} />
       </RequireAuth>
     ),
   },
@@ -463,7 +463,7 @@ const routes = [
     route: "/usuarios/criar-usuario",
     component: (
       <RequireAuth>
-        <UsuariosCreate />
+        <UsuariosCreate allowedRoles={["administrador"]} />
       </RequireAuth>
     ),
   },
@@ -476,7 +476,7 @@ const routes = [
     route: "/usuarios/:id/editar-usuario",
     component: (
       <RequireAuth>
-        <UsuariosEdit />
+        <UsuariosEdit allowedRoles={["administrador"]} />
       </RequireAuth>
     ),
   },

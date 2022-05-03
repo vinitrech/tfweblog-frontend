@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-alert */
 /* eslint-disable no-else-return */
 /* eslint-disable prefer-template */
@@ -36,7 +37,7 @@ import CpfValidator from "utils/validateCpf";
 import { useAuth } from "utils/auth";
 import MDAlert from "components/MDAlert";
 
-function UsuariosEdit() {
+function UsuariosEdit({ allowedRoles }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [nome, setNome] = useState("");
@@ -135,6 +136,18 @@ function UsuariosEdit() {
 
   useEffect(() => {
     document.title = "TFWebLog - Editar Usuário";
+
+    fetch(API_URL + "/getData", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (!allowedRoles.includes(json.cargo)) {
+          navigate("/login", { replace: true });
+        }
+      })
+      .catch();
 
     buscaItem();
   }, []);

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-use-before-define */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-console */
@@ -42,7 +43,7 @@ import MDInput from "components/MDInput";
 import { useAuth } from "utils/auth";
 import exportFromJSON from "export-from-json";
 
-function Usuarios() {
+function Usuarios({allowedRoles}) {
   const API_URL = process.env.REACT_APP_API_URL;
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState();
@@ -210,6 +211,19 @@ function Usuarios() {
 
   useEffect(() => {
     document.title = "TFWebLog - Usuários";
+
+    fetch(API_URL + "/getData", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+    .then((res) => res.json())
+    .then((json) => {
+      if(!allowedRoles.includes(json.cargo)){
+        navigate("/login", { replace: true });
+      }
+    })
+    .catch();
+
     buscaItens();
   }, []);
 

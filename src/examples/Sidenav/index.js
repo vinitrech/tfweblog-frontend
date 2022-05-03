@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -46,17 +46,30 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "context";
-import { useAuth } from "utils/auth";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode } = controller;
   const location = useLocation();
   const collapseName = location.pathname.split("/")[1];
+  const API_URL = process.env.REACT_APP_API_URL;
+  const [role, setRole] = useState("");
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
   useEffect(() => {
+    fetch(API_URL + "/getData", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setRole(json.cargo);
+      })
+      .catch();
+
+    console.log("executou de novo");
+
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
@@ -76,12 +89,11 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
-  const auth = useAuth();
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ name, icon, key, show, allowedRoles, route }) => {
     let returnValue;
 
-    if (show === true && allowedRoles !== undefined && allowedRoles.includes(auth.role)) {
+    if (show === true && allowedRoles !== undefined && allowedRoles.includes(role)) {
       returnValue = (
         <NavLink key={key} to={route}>
           <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
