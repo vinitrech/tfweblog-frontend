@@ -68,8 +68,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       })
       .catch();
 
-    console.log("executou de novo");
-
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
