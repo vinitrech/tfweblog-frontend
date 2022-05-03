@@ -325,7 +325,7 @@ const routes = [
     name: "Categorias",
     key: "categorias",
     show: true,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     icon: <Icon fontSize="small">list</Icon>,
     route: "/categorias",
     component: (
@@ -339,7 +339,7 @@ const routes = [
     name: "Criar Categoria",
     key: "criar-categoria",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     route: "/categorias/criar-categoria",
     component: (
       <RequireAuth>
@@ -352,7 +352,7 @@ const routes = [
     name: "Editar Categoria",
     key: "editar-categoria",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     route: "/categorias/:id/editar-categoria",
     component: (
       <RequireAuth>
@@ -365,7 +365,7 @@ const routes = [
     name: "Clientes",
     key: "clientes",
     show: true,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     icon: <Icon fontSize="small">group</Icon>,
     route: "/clientes",
     component: (
@@ -379,7 +379,7 @@ const routes = [
     name: "Criar Cliente",
     key: "criar-cliente",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     route: "/clientes/criar-cliente",
     component: (
       <RequireAuth>
@@ -392,7 +392,7 @@ const routes = [
     name: "Editar Cliente",
     key: "editar-cliente",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     route: "/clientes/:id/editar-cliente",
     component: (
       <RequireAuth>
@@ -405,7 +405,7 @@ const routes = [
     name: "Veículos",
     key: "veiculos",
     show: true,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     icon: <Icon fontSize="small">garage</Icon>,
     route: "/veiculos",
     component: (
@@ -419,7 +419,7 @@ const routes = [
     name: "Criar Veículo",
     key: "criar-veiculo",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     route: "/veiculos/criar-veiculo",
     component: (
       <RequireAuth>
@@ -432,7 +432,7 @@ const routes = [
     name: "Editar Veículo",
     key: "editar-veiculo",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor"],
     route: "/veiculos/:id/editar-veiculo",
     component: (
       <RequireAuth>
