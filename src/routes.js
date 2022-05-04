@@ -73,7 +73,7 @@ const routes = [
     name: "Dashboard",
     key: "dashboard",
     show: true,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: (
@@ -87,7 +87,7 @@ const routes = [
     name: "Transportes",
     key: "transportes",
     show: true,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes",
     component: (
