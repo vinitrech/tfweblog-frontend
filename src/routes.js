@@ -54,6 +54,7 @@ import Categorias from "layouts/categorias";
 import CategoriasCreate from "layouts/categorias/create";
 import CategoriasEdit from "layouts/categorias/edit";
 import Clientes from "layouts/clientes";
+import ClientesCreate from "layouts/clientes/create";
 import ClientesEdit from "layouts/clientes/edit";
 import Veiculos from "layouts/veiculos";
 import VeiculosCreate from "layouts/veiculos/create";
@@ -372,7 +373,7 @@ const routes = [
     route: "/clientes",
     component: (
       <RequireAuth>
-        <Clientes />
+        <Clientes allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
@@ -385,7 +386,7 @@ const routes = [
     route: "/clientes/criar-cliente",
     component: (
       <RequireAuth>
-        <ClientesEdit />
+        <ClientesCreate allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
@@ -398,7 +399,7 @@ const routes = [
     route: "/clientes/:id/editar-cliente",
     component: (
       <RequireAuth>
-        <ClientesEdit />
+        <ClientesEdit allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
