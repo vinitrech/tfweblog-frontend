@@ -51,6 +51,7 @@ import Avaliacoes from "layouts/avaliacoes";
 import AvaliacoesEdit from "layouts/avaliacoes/edit";
 import AvaliacoesView from "layouts/avaliacoes/view";
 import Categorias from "layouts/categorias";
+import CategoriasCreate from "layouts/categorias/create";
 import CategoriasEdit from "layouts/categorias/edit";
 import Clientes from "layouts/clientes";
 import ClientesEdit from "layouts/clientes/edit";
@@ -331,7 +332,7 @@ const routes = [
     route: "/categorias",
     component: (
       <RequireAuth>
-        <Categorias />
+        <Categorias allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
@@ -344,7 +345,7 @@ const routes = [
     route: "/categorias/criar-categoria",
     component: (
       <RequireAuth>
-        <CategoriasEdit />
+        <CategoriasCreate allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
@@ -357,7 +358,7 @@ const routes = [
     route: "/categorias/:id/editar-categoria",
     component: (
       <RequireAuth>
-        <CategoriasEdit />
+        <CategoriasEdit allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },

@@ -1,6 +1,8 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-alert */
 /* eslint-disable no-else-return */
+/* eslint-disable react/prop-types */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-template */
 /**
 =========================================================
@@ -29,19 +31,19 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useEffect, useState } from "react";
 import MDInput from "components/MDInput";
 import { CircularProgress, Grid } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
-import { useAuth } from "utils/auth";
 import MDAlert from "components/MDAlert";
+import { useAuth } from "utils/auth";
 
-function CategoriasEdit({ allowedRoles }) {
+function CategoriasCreate({ allowedRoles }) {
   const [descricao, setDescricao] = useState("");
+  const [erroCadastro, setErroCadastro] = useState(false);
+  const auth = useAuth();
+  const [isLoading, setLoading] = useState(true);
+
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
-  const auth = useAuth();
-  const [erroCadastro, setErroCadastro] = useState(false);
-  const { id } = useParams();
-  const [isLoading, setLoading] = useState(true);
 
   const handleLogout = () => {
     auth.logout();
@@ -54,8 +56,8 @@ function CategoriasEdit({ allowedRoles }) {
     setErroCadastro(false);
     const cadastro = { descricao };
 
-    fetch(API_URL + "/categorias/" + id, {
-      method: "PUT",
+    fetch(API_URL + "/categorias", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -64,7 +66,7 @@ function CategoriasEdit({ allowedRoles }) {
     })
       .then((res) => {
         if (res.status === 204) {
-          alert("Categoria atualizada com sucesso.");
+          alert("Categoria criada com sucesso.");
           navigate("/categorias", { replace: true });
         } else if (res.status !== 401) {
           setErroCadastro(true);
@@ -75,29 +77,8 @@ function CategoriasEdit({ allowedRoles }) {
       .catch();
   };
 
-  const buscaItem = () => {
-    fetch(API_URL + "/categorias/" + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((response) => {
-        if (response.status !== 401) {
-          response.json().then((resultItem) => {
-            setDescricao(resultItem.descricao);
-            setLoading(false);
-          });
-        } else {
-          handleLogout();
-        }
-      })
-      .catch();
-  };
-
   useEffect(() => {
-    document.title = "TFWebLog - Editar Categoria";
+    document.title = "TFWebLog - Criar Categoria";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -106,12 +87,12 @@ function CategoriasEdit({ allowedRoles }) {
       .then((res) => res.json())
       .then((json) => {
         if (!allowedRoles.includes(json.cargo)) {
-          navigate("/login", { replace: true });
+          handleLogout();
+        } else {
+          setLoading(false);
         }
       })
       .catch();
-
-    buscaItem();
   }, []);
 
   if (isLoading) {
@@ -137,10 +118,10 @@ function CategoriasEdit({ allowedRoles }) {
         <DashboardNavbar />
         <MDBox
           component="form"
+          onSubmit={handleSubmit}
           role="form"
           pt={3}
           pb={3}
-          onSubmit={handleSubmit}
           sx={() => ({
             fontSize: "16px !important",
           })}
@@ -159,6 +140,7 @@ function CategoriasEdit({ allowedRoles }) {
               Houve um problema no cadastro.
             </MDAlert>
           )}
+
           <Grid container spacing={3} mb={3}>
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={0}>
@@ -167,7 +149,6 @@ function CategoriasEdit({ allowedRoles }) {
                   label="Descrição"
                   fullWidth
                   required
-                  value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                 />
               </MDBox>
@@ -189,4 +170,4 @@ function CategoriasEdit({ allowedRoles }) {
   }
 }
 
-export default CategoriasEdit;
+export default CategoriasCreate;
