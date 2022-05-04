@@ -55,6 +55,7 @@ import CategoriasEdit from "layouts/categorias/edit";
 import Clientes from "layouts/clientes";
 import ClientesEdit from "layouts/clientes/edit";
 import Veiculos from "layouts/veiculos";
+import VeiculosCreate from "layouts/veiculos/create";
 import VeiculosEdit from "layouts/veiculos/edit";
 import Usuarios from "layouts/usuarios";
 import UsuariosCreate from "layouts/usuarios/create";
@@ -410,20 +411,20 @@ const routes = [
     route: "/veiculos",
     component: (
       <RequireAuth>
-        <Veiculos />
+        <Veiculos allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
   {
     type: "collapse",
-    name: "Criar Veículo",
+    name: "Criar Veículos",
     key: "criar-veiculo",
     show: false,
-    allowedRoles: ["administrador", "supervisor"],
+    allowedRoles: ["administrador"],
     route: "/veiculos/criar-veiculo",
     component: (
       <RequireAuth>
-        <VeiculosEdit />
+        <VeiculosCreate allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
@@ -432,11 +433,11 @@ const routes = [
     name: "Editar Veículo",
     key: "editar-veiculo",
     show: false,
-    allowedRoles: ["administrador", "supervisor"],
+    allowedRoles: ["administrador"],
     route: "/veiculos/:id/editar-veiculo",
     component: (
       <RequireAuth>
-        <VeiculosEdit />
+        <VeiculosEdit allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },

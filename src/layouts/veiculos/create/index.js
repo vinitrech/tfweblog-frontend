@@ -33,18 +33,13 @@ import MDInput from "components/MDInput";
 import { CircularProgress, Grid, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
-import Select from "react-select";
 import MDTypography from "components/MDTypography";
 import MDAlert from "components/MDAlert";
-import CpfValidator from "utils/validateCpf";
 import { useAuth } from "utils/auth";
 
-function UsuariosCreate({allowedRoles}) {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [cargo, setCargo] = useState("");
+function VeiculosCreate({ allowedRoles }) {
+  const [modelo, setModelo] = useState("");
+  const [placa, setPlaca] = useState("");
   const [ativo, setActiveUpdate] = useState(true);
   const [erroCadastro, setErroCadastro] = useState(false);
   const auth = useAuth();
@@ -53,43 +48,18 @@ function UsuariosCreate({allowedRoles}) {
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
-  const handleOnlyNumbers = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setCpf(value);
-  };
-
-  const handleCpf = (input) => {
-    if (input.target.value.length > 0) {
-      if (CpfValidator(input.target.value)) {
-        setCpf(input.target.value);
-      } else {
-        setCpf("");
-        alert("CPF inválido.");
-      }
-    }
-  };
-
   const handleLogout = () => {
     auth.logout();
     navigate("/login", { replace: true });
   };
 
-  const handleSelect = (input) => {
-    setCargo(input.value);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (cargo === "") {
-      alert("O cargo precisa ser preenchido.");
-      return;
-    }
-
     setErroCadastro(false);
-    const cadastro = { email, senha, nome, cpf, cargo, ativo };
+    const cadastro = { modelo, placa, ativo };
 
-    fetch(API_URL + "/usuarios", {
+    fetch(API_URL + "/veiculos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -99,8 +69,8 @@ function UsuariosCreate({allowedRoles}) {
     })
       .then((res) => {
         if (res.status === 204) {
-          alert("Usuário criado com sucesso.");
-          navigate("/usuarios", { replace: true });
+          alert("Veículo criado com sucesso.");
+          navigate("/veiculos", { replace: true });
         } else if (res.status !== 401) {
           setErroCadastro(true);
         } else {
@@ -111,7 +81,7 @@ function UsuariosCreate({allowedRoles}) {
   };
 
   useEffect(() => {
-    document.title = "TFWebLog - Criar Usuário";
+    document.title = "TFWebLog - Criar Veículo";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -121,18 +91,12 @@ function UsuariosCreate({allowedRoles}) {
       .then((json) => {
         if (!allowedRoles.includes(json.cargo)) {
           handleLogout();
-        }else{
+        } else {
           setLoading(false);
         }
       })
       .catch();
   }, []);
-
-  const options = [
-    { value: "administrador", label: "Administrador" },
-    { value: "supervisor", label: "Supervisor" },
-    { value: "motorista", label: "Motorista" },
-  ];
 
   if (isLoading) {
     return (
@@ -176,7 +140,7 @@ function UsuariosCreate({allowedRoles}) {
                 margin: "10px 0 30px 0",
               })}
             >
-              Email já utilizado.
+              Placa já cadastrada.
             </MDAlert>
           )}
 
@@ -185,10 +149,10 @@ function UsuariosCreate({allowedRoles}) {
               <MDBox mb={0}>
                 <MDInput
                   type="text"
-                  label="Nome"
+                  label="Modelo"
                   fullWidth
                   required
-                  onChange={(e) => setNome(e.target.value)}
+                  onChange={(e) => setModelo(e.target.value)}
                 />
               </MDBox>
             </Grid>
@@ -199,65 +163,11 @@ function UsuariosCreate({allowedRoles}) {
               <MDBox mb={0}>
                 <MDInput
                   type="text"
-                  label="CPF (somente números)"
+                  label="Placa"
                   fullWidth
                   maxLength="11"
-                  onBlur={(e) => handleCpf(e)}
-                  onChange={(e) => handleOnlyNumbers(e)}
-                  value={cpf}
+                  onChange={(e) => setPlaca(e.target.value)}
                   required
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Email"
-                  fullWidth
-                  required
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Senha"
-                  fullWidth
-                  required
-                  onChange={(e) => setSenha(e.target.value)}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mb={0}>
-                <MDTypography
-                  color="primary"
-                  sx={() => ({
-                    fontSize: "14px",
-                    fontWeight: "300",
-                    marginLeft: "5px",
-                    marginBottom: "10px",
-                  })}
-                >
-                  Cargo
-                </MDTypography>
-                <Select
-                  options={options}
-                  placeholder="Selecione..."
-                  name="cargo"
-                  onChange={(e) => handleSelect(e)}
                 />
               </MDBox>
             </Grid>
@@ -289,4 +199,4 @@ function UsuariosCreate({allowedRoles}) {
   }
 }
 
-export default UsuariosCreate;
+export default VeiculosCreate;
