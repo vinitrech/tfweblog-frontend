@@ -60,7 +60,7 @@ function TransportesCreate({ allowedRoles }) {
   const [supervisores, setSupervisores] = useState([]);
   const [data_inicio, setDataInicio] = useState("");
   const data_finalizacao = "";
-  const status = "aguardando";
+  const status = "aguardando motorista";
   const [erroCadastro, setErroCadastro] = useState(false);
   const auth = useAuth();
   const [isLoading, setLoading] = useState(true);
