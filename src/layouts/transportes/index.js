@@ -193,8 +193,8 @@ function Transportes() {
         );
       }else{
         statusItem = <MDBox ml={-1}>
-        <MDBadge badgeContent="finalizado" color="success" variant="gradient" size="sm" />
-      </MDBox> 
+          <MDBadge badgeContent="finalizado" color="success" variant="gradient" size="sm" />
+        </MDBox> 
       }
   
       temporaryRows.push({
