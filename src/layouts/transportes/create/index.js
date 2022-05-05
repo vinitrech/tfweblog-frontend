@@ -43,13 +43,13 @@ import MDTypography from "components/MDTypography";
 import MDAlert from "components/MDAlert";
 import { useAuth } from "utils/auth";
 
-function UsuariosCreate({allowedRoles}) {
+function TransportesCreate({allowedRoles}) {
   const [id_categoria, setCategoria] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [id_cidade, setCidade] = useState("");
   const [cidadeSelecionada, setCidadeSelecionada] = useState(null);
-  // const [id_cliente, setCliente] = useState("");
-  // const [clientes, setClientes] = useState([]);
+  const [id_cliente, setCliente] = useState("");
+  const [clientes, setClientes] = useState([]);
   // const [id_motorista, setMotorista] = useState("");
   // const [motoristas, setMotoristas] = useState([]);
   // const [id_veiculo, setVeiculo] = useState("");
@@ -75,6 +75,10 @@ function UsuariosCreate({allowedRoles}) {
 
   const handleCategoria = (input) => {
     setCategoria(input.value);
+  };
+
+  const handleCliente = (input) => {
+    setCliente(input.value);
   };
 
   const handleCidadeChange = (input) => {
@@ -130,10 +134,10 @@ function UsuariosCreate({allowedRoles}) {
     //   return;
     // }
     setErroCadastro(false);
-    const cadastro = { id_categoria, id_cidade, data_inicio, data_finalizacao, status };
-    // const cadastro = { id_categoria, id_cidade, id_cliente, id_motorista, id_veiculo, id_administrador, id_supervisor, data_inicio, data_finalizacao, status };
+    const cadastro = { id_categoria, id_cidade, id_cliente, data_inicio, data_finalizacao, status };
+    // const cadastro = { id_motorista, id_veiculo, id_administrador, id_supervisor };
 
-    fetch(API_URL + "/usuarios", {
+    fetch(API_URL + "/transportes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -143,8 +147,8 @@ function UsuariosCreate({allowedRoles}) {
     })
       .then((res) => {
         if (res.status === 204) {
-          alert("Usuário criado com sucesso.");
-          navigate("/usuarios", { replace: true });
+          alert("Transporte criado com sucesso.");
+          navigate("/transportes", { replace: true });
         } else if (res.status !== 401) {
           setErroCadastro(true);
         } else {
@@ -175,8 +179,29 @@ function UsuariosCreate({allowedRoles}) {
       .catch();
   }
 
+  const buscaClientes = () => {
+    fetch(API_URL + "/clientes/getAtivos", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((itemsArray) => {
+        const clientesTemp = [];
+
+        itemsArray.map((item) => {
+          clientesTemp.push({
+            value: item.id,
+            label: item.nome,
+          });
+        });
+
+        setClientes(clientesTemp);
+      })
+      .catch();
+  }
+
   useEffect(() => {
-    document.title = "TFWebLog - Criar Usuário";
+    document.title = "TFWebLog - Criar Transporte";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -189,6 +214,7 @@ function UsuariosCreate({allowedRoles}) {
         }else{
 
           buscaCategorias();
+          buscaClientes();
 
           setLoading(false);
         }
@@ -312,6 +338,28 @@ function UsuariosCreate({allowedRoles}) {
                 />
               </MDBox>
             </Grid>
+
+            <Grid item xs={12} md={6} lg={3}>
+              <MDBox mb={0}>
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Cliente
+                </MDTypography>
+                <Select
+                  options={clientes}
+                  placeholder="Selecione..."
+                  maxLength={15}
+                  onChange={(e) => handleCliente(e)}
+                />
+              </MDBox>
+            </Grid>
           </Grid>
 
           <Grid container spacing={3}>
@@ -329,4 +377,4 @@ function UsuariosCreate({allowedRoles}) {
   }
 }
 
-export default UsuariosCreate;
+export default TransportesCreate;
