@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-var */
 /* eslint-disable array-callback-return */
 /* eslint-disable camelcase */
 /* eslint-disable no-else-return */
@@ -36,6 +38,7 @@ import { CircularProgress, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
 import Select from "react-select";
+import AsyncSelect from "react-select/async";
 import MDTypography from "components/MDTypography";
 import MDAlert from "components/MDAlert";
 import { useAuth } from "utils/auth";
@@ -44,7 +47,7 @@ function UsuariosCreate({allowedRoles}) {
   const [id_categoria, setCategoria] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [id_cidade, setCidade] = useState("");
-  const [cidades, setCidades] = useState([]);
+  const [cidadeSelecionada, setCidadeSelecionada] = useState(null);
   // const [id_cliente, setCliente] = useState("");
   // const [clientes, setClientes] = useState([]);
   // const [id_motorista, setMotorista] = useState("");
@@ -74,8 +77,19 @@ function UsuariosCreate({allowedRoles}) {
     setCategoria(input.value);
   };
 
-  const handleCidades = (input) => {
-    setCidade(input.value);
+  const handleCidadeChange = (input) => {
+    setCidade(input.ID);
+    setCidadeSelecionada(input);
+  };
+
+  const loadCidades = (inputValue) => {
+
+    return fetch(API_URL + "/cidades?search=" + inputValue, {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .catch();
   };
 
   const handleSubmit = (e) => {
@@ -140,6 +154,27 @@ function UsuariosCreate({allowedRoles}) {
       .catch();
   };
 
+  const buscaCategorias = () => {
+    fetch(API_URL + "/categorias", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((itemsArray) => {
+        const categoriasTemp = [];
+
+        itemsArray.map((item) => {
+          categoriasTemp.push({
+            value: item.id,
+            label: item.descricao,
+          });
+        });
+
+        setCategorias(categoriasTemp);
+      })
+      .catch();
+  }
+
   useEffect(() => {
     document.title = "TFWebLog - Criar Usuário";
 
@@ -153,43 +188,7 @@ function UsuariosCreate({allowedRoles}) {
           handleLogout();
         }else{
 
-          fetch(API_URL + "/categorias", {
-            method: "GET",
-            headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-          })
-            .then((res) => res.json())
-            .then((itemsArray) => {
-              const categoriasTemp = [];
-
-              itemsArray.map((item) => {
-                categoriasTemp.push({
-                  value: item.id,
-                  label: item.descricao
-                })
-              })
-
-              setCategorias(categoriasTemp);
-            })
-            .catch();
-
-            fetch(API_URL + "/cidades", {
-              method: "GET",
-              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-            })
-              .then((res) => res.json())
-              .then((itemsArray) => {
-                const cidadesTemp = [];
-  
-                itemsArray.map((item) => {
-                  cidadesTemp.push({
-                    value: item.ID,
-                    label: item.Nome
-                  })
-                })
-  
-                setCidades(cidadesTemp);
-              })
-              .catch();
+          buscaCategorias();
 
           setLoading(false);
         }
@@ -281,7 +280,7 @@ function UsuariosCreate({allowedRoles}) {
                 <Select
                   options={categorias}
                   placeholder="Selecione..."
-                  name="cargo"
+                  maxLength={15}
                   onChange={(e) => handleCategoria(e)}
                 />
               </MDBox>
@@ -302,12 +301,14 @@ function UsuariosCreate({allowedRoles}) {
                 >
                   Cidade
                 </MDTypography>
-                <Select
-                  options={cidades}
-                  placeholder="Selecione..."
-                  name="cidade"
-                  maxLength={15}
-                  onChange={(e) => handleCidades(e)}
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  value={cidadeSelecionada}
+                  getOptionLabel={e => e.Nome}
+                  getOptionValue={e => e.ID}
+                  loadOptions={loadCidades}
+                  onChange={handleCidadeChange}
                 />
               </MDBox>
             </Grid>
