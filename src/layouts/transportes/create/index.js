@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable camelcase */
 /* eslint-disable no-else-return */
 /* eslint-disable react/prop-types */
@@ -44,16 +45,16 @@ function UsuariosCreate({allowedRoles}) {
   const [categorias, setCategorias] = useState([]);
   const [id_cidade, setCidade] = useState("");
   const [cidades, setCidades] = useState([]);
-  const [id_cliente, setCliente] = useState("");
-  const [clientes, setClientes] = useState([]);
-  const [id_motorista, setMotorista] = useState("");
-  const [motoristas, setMotoristas] = useState([]);
-  const [id_veiculo, setVeiculo] = useState("");
-  const [veiculos, setVeiculos] = useState([]);
-  const [id_administrador, setAdministrador] = useState("");
-  const [administradores, setAdministradores] = useState([]);
-  const [id_supervisor, setSupervisor] = useState("");
-  const [supervisores, setSupervisores] = useState([]);
+  // const [id_cliente, setCliente] = useState("");
+  // const [clientes, setClientes] = useState([]);
+  // const [id_motorista, setMotorista] = useState("");
+  // const [motoristas, setMotoristas] = useState([]);
+  // const [id_veiculo, setVeiculo] = useState("");
+  // const [veiculos, setVeiculos] = useState([]);
+  // const [id_administrador, setAdministrador] = useState("");
+  // const [administradores, setAdministradores] = useState([]);
+  // const [id_supervisor, setSupervisor] = useState("");
+  // const [supervisores, setSupervisores] = useState([]);
   const [data_inicio, setDataInicio] = useState("");
   const data_finalizacao = "";
   const status = "aguardando";
@@ -69,8 +70,12 @@ function UsuariosCreate({allowedRoles}) {
     navigate("/login", { replace: true });
   };
 
-  const handleSelect = (input) => {
-    setCargo(input.value);
+  const handleCategoria = (input) => {
+    setCategoria(input.value);
+  };
+
+  const handleCidades = (input) => {
+    setCidade(input.value);
   };
 
   const handleSubmit = (e) => {
@@ -86,33 +91,33 @@ function UsuariosCreate({allowedRoles}) {
       return;
     }
 
-    if (id_cliente === "") {
-      alert("Selecione um cliente.");
-      return;
-    }
+    // if (id_cliente === "") {
+    //   alert("Selecione um cliente.");
+    //   return;
+    // }
 
-    if (id_motorista === "") {
-      alert("Selecione um motorista.");
-      return;
-    }
+    // if (id_motorista === "") {
+    //   alert("Selecione um motorista.");
+    //   return;
+    // }
 
-    if (id_veiculo === "") {
-      alert("Selecione um veículo.");
-      return;
-    }
+    // if (id_veiculo === "") {
+    //   alert("Selecione um veículo.");
+    //   return;
+    // }
 
-    if (id_administrador === "") {
-      alert("Selecione um administrador.");
-      return;
-    }
+    // if (id_administrador === "") {
+    //   alert("Selecione um administrador.");
+    //   return;
+    // }
 
-    if (id_supervisor === "") {
-      alert("Selecione um supervisor.");
-      return;
-    }
-
+    // if (id_supervisor === "") {
+    //   alert("Selecione um supervisor.");
+    //   return;
+    // }
     setErroCadastro(false);
-    const cadastro = { id_categoria, id_cidade, id_cliente, id_motorista, id_veiculo, id_administrador, id_supervisor, data_inicio, data_finalizacao, status };
+    const cadastro = { id_categoria, id_cidade, data_inicio, data_finalizacao, status };
+    // const cadastro = { id_categoria, id_cidade, id_cliente, id_motorista, id_veiculo, id_administrador, id_supervisor, data_inicio, data_finalizacao, status };
 
     fetch(API_URL + "/usuarios", {
       method: "POST",
@@ -147,17 +152,50 @@ function UsuariosCreate({allowedRoles}) {
         if (!allowedRoles.includes(json.cargo)) {
           handleLogout();
         }else{
+
+          fetch(API_URL + "/categorias", {
+            method: "GET",
+            headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+          })
+            .then((res) => res.json())
+            .then((itemsArray) => {
+              const categoriasTemp = [];
+
+              itemsArray.map((item) => {
+                categoriasTemp.push({
+                  value: item.id,
+                  label: item.descricao
+                })
+              })
+
+              setCategorias(categoriasTemp);
+            })
+            .catch();
+
+            fetch(API_URL + "/cidades", {
+              method: "GET",
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            })
+              .then((res) => res.json())
+              .then((itemsArray) => {
+                const cidadesTemp = [];
+  
+                itemsArray.map((item) => {
+                  cidadesTemp.push({
+                    value: item.ID,
+                    label: item.Nome
+                  })
+                })
+  
+                setCidades(cidadesTemp);
+              })
+              .catch();
+
           setLoading(false);
         }
       })
       .catch();
   }, []);
-
-  const options = [
-    { value: "administrador", label: "Administrador" },
-    { value: "supervisor", label: "Supervisor" },
-    { value: "motorista", label: "Motorista" },
-  ];
 
   if (isLoading) {
     return (
@@ -206,14 +244,45 @@ function UsuariosCreate({allowedRoles}) {
           )}
 
           <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={6} lg={3}>
               <MDBox mb={0}>
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Data de Início
+                </MDTypography>
                 <MDInput
                   type="date"
-                  label="Data de Início"
                   fullWidth
                   required
                   onChange={(e) => setDataInicio(e.target.value)}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={6} lg={3}>
+              <MDBox mb={0}>
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Categoria
+                </MDTypography>
+                <Select
+                  options={categorias}
+                  placeholder="Selecione..."
+                  name="cargo"
+                  onChange={(e) => handleCategoria(e)}
                 />
               </MDBox>
             </Grid>
@@ -231,13 +300,14 @@ function UsuariosCreate({allowedRoles}) {
                     marginBottom: "10px",
                   })}
                 >
-                  Cargo
+                  Cidade
                 </MDTypography>
                 <Select
-                  options={options}
+                  options={cidades}
                   placeholder="Selecione..."
-                  name="cargo"
-                  onChange={(e) => handleSelect(e)}
+                  name="cidade"
+                  maxLength={15}
+                  onChange={(e) => handleCidades(e)}
                 />
               </MDBox>
             </Grid>
