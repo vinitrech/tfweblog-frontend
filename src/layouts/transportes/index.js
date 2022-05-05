@@ -45,6 +45,7 @@ import { CircularProgress, Icon } from "@mui/material";
 import MDInput from "components/MDInput";
 import { useAuth } from "utils/auth";
 import exportFromJSON from "export-from-json";
+import MDTypography from "components/MDTypography";
 
 function Transportes() {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -70,6 +71,14 @@ function Transportes() {
     itemsArray.map((item) => {
       let date = new Date(item.data_inicio);
       date =
+        date.getDate() +
+        "/" +
+        (date.getMonth() + 1) +
+        "/" +
+        date.getFullYear();
+
+        let dateFinalizacao = new Date(item.data_finalizacao);
+      dateFinalizacao =
         date.getDate() +
         "/" +
         (date.getMonth() + 1) +
@@ -192,9 +201,23 @@ function Transportes() {
           </>
         );
       }else{
-        statusItem = <MDBox ml={-1}>
-          <MDBadge badgeContent="finalizado" color="success" variant="gradient" size="sm" />
-        </MDBox> 
+        statusItem = (
+          <MDBox ml={-1}>
+            <MDBadge badgeContent="finalizado" color="success" variant="gradient" size="sm" />
+
+            <MDTypography
+              color="primary"
+              sx={() => ({
+                fontSize: "14px",
+                fontWeight: "300",
+                marginLeft: "5px",
+                marginBottom: "10px",
+              })}
+            >
+              {dateFinalizacao}
+            </MDTypography>
+          </MDBox>
+        ); 
       }
   
       temporaryRows.push({

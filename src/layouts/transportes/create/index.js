@@ -54,10 +54,6 @@ function TransportesCreate({ allowedRoles }) {
   const [motoristas, setMotoristas] = useState([]);
   const [id_veiculo, setVeiculo] = useState("");
   const [veiculos, setVeiculos] = useState([]);
-  const [id_administrador, setAdministrador] = useState("");
-  const [administradores, setAdministradores] = useState([]);
-  const [id_supervisor, setSupervisor] = useState("");
-  const [supervisores, setSupervisores] = useState([]);
   const [data_inicio, setDataInicio] = useState("");
   const data_finalizacao = "";
   const status = "aguardando motorista";
@@ -87,14 +83,6 @@ function TransportesCreate({ allowedRoles }) {
 
   const handleVeiculo = (input) => {
     setVeiculo(input.value);
-  };
-
-  const handleAdministrador = (input) => {
-    setAdministrador(input.value);
-  };
-
-  const handleSupervisor = (input) => {
-    setSupervisor(input.value);
   };
 
   const handleCidadeChange = (input) => {
@@ -139,18 +127,8 @@ function TransportesCreate({ allowedRoles }) {
       return;
     }
 
-    if (id_administrador === "") {
-      alert("Selecione um administrador.");
-      return;
-    }
-
-    if (id_supervisor === "") {
-      alert("Selecione um supervisor.");
-      return;
-    }
-
     setErroCadastro(false);
-    const cadastro = { id_categoria, id_cidade, id_cliente, id_motorista, id_veiculo, id_administrador, id_supervisor, data_inicio, data_finalizacao, status };
+    const cadastro = { id_categoria, id_cidade, id_cliente, id_motorista, id_veiculo, data_inicio, data_finalizacao, status };
 
     fetch(API_URL + "/transportes", {
       method: "POST",
@@ -256,49 +234,7 @@ function TransportesCreate({ allowedRoles }) {
       })
       .catch();
   };
-
-  const buscaAdministradores = () => {
-    fetch(API_URL + "/usuarios/getAdministradores", {
-      method: "GET",
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((res) => res.json())
-      .then((itemsArray) => {
-        const administradoresTemp = [];
-
-        itemsArray.map((item) => {
-          administradoresTemp.push({
-            value: item.id,
-            label: item.nome,
-          });
-        });
-
-        setAdministradores(administradoresTemp);
-      })
-      .catch();
-  };
-
-  const buscaSupervisores = () => {
-    fetch(API_URL + "/usuarios/getSupervisores", {
-      method: "GET",
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((res) => res.json())
-      .then((itemsArray) => {
-        const supervisoresTemp = [];
-
-        itemsArray.map((item) => {
-          supervisoresTemp.push({
-            value: item.id,
-            label: item.nome,
-          });
-        });
-
-        setSupervisores(supervisoresTemp);
-      })
-      .catch();
-  };
-
+  
   useEffect(() => {
     document.title = "TFWebLog - Criar Transporte";
 
@@ -315,8 +251,6 @@ function TransportesCreate({ allowedRoles }) {
           buscaClientes();
           buscaMotoristas();
           buscaVeiculos();
-          buscaAdministradores();
-          buscaSupervisores();
 
           setLoading(false);
         }
@@ -505,51 +439,6 @@ function TransportesCreate({ allowedRoles }) {
                   placeholder="Selecione..."
                   maxLength={15}
                   onChange={(e) => handleVeiculo(e)}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mb={0}>
-                <MDTypography
-                  color="primary"
-                  sx={() => ({
-                    fontSize: "14px",
-                    fontWeight: "300",
-                    marginLeft: "5px",
-                    marginBottom: "10px",
-                  })}
-                >
-                  Administrador
-                </MDTypography>
-                <Select
-                  options={administradores}
-                  placeholder="Selecione..."
-                  maxLength={15}
-                  onChange={(e) => handleAdministrador(e)}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <MDBox mb={0}>
-                <MDTypography
-                  color="primary"
-                  sx={() => ({
-                    fontSize: "14px",
-                    fontWeight: "300",
-                    marginLeft: "5px",
-                    marginBottom: "10px",
-                  })}
-                >
-                  Supervisor
-                </MDTypography>
-                <Select
-                  options={supervisores}
-                  placeholder="Selecione..."
-                  maxLength={15}
-                  onChange={(e) => handleSupervisor(e)}
                 />
               </MDBox>
             </Grid>
