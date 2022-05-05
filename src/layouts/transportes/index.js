@@ -1,3 +1,5 @@
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-use-before-define */
 /* eslint-disable arrow-body-style */
@@ -26,6 +28,7 @@ Coded by www.creative-tim.com
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import MDBadge from "components/MDBadge";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -43,8 +46,9 @@ import MDInput from "components/MDInput";
 import { useAuth } from "utils/auth";
 import exportFromJSON from "export-from-json";
 
-function Usuarios({allowedRoles}) {
+function Transportes() {
   const API_URL = process.env.REACT_APP_API_URL;
+  const [cargo, setCargo] = useState("");
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState();
   const [searchInput, setSearchInput] = useState("");
@@ -52,9 +56,9 @@ function Usuarios({allowedRoles}) {
   const navigate = useNavigate();
   const columns = [
     { Header: "identificador", accessor: "identificador", align: "center" },
-    { Header: "email", accessor: "email", align: "left" },
-    { Header: "data", accessor: "data", align: "center" },
-    { Header: "ativo", accessor: "ativo", align: "center" },
+    { Header: "cliente", accessor: "cliente", align: "left" },
+    { Header: "inicio", accessor: "inicio", align: "center" },
+    { Header: "status", accessor: "status", align: "center" },
     { Header: "ações", accessor: "acoes", align: "center", disableSortBy: true },
   ];
 
@@ -64,28 +68,43 @@ function Usuarios({allowedRoles}) {
     const temporaryRows = [];
 
     itemsArray.map((item) => {
-      let date = new Date(item.created_at);
+      let date = new Date(item.data_inicio);
       date =
         date.getDate() +
         "/" +
         (date.getMonth() + 1) +
         "/" +
-        date.getFullYear() +
-        " " +
-        date.getHours() +
-        ":" +
-        date.getMinutes() +
-        ":" +
-        date.getSeconds();
+        date.getFullYear();
+
+      let statusItem = "";
+
+      if(item.status === "aguardando"){
+        statusItem = <MDBox ml={-1}>
+        <MDBadge badgeContent="aguardando" color="secondary" variant="gradient" size="sm" />
+      </MDBox>
+      }else if(item.status === "em andamento"){
+        statusItem = (
+          <MDBox ml={-1}>
+            <MDBadge badgeContent="em andamento" color="primary" variant="gradient" size="sm" />
+          </MDBox>
+        );
+      }else{
+        statusItem = <MDBox ml={-1}>
+        <MDBadge badgeContent="finalizado" color="success" variant="gradient" size="sm" />
+      </MDBox>
+      }
   
       temporaryRows.push({
         identificador: item.id,
-        email: item.email,
-        data: date,
-        ativo: !item.ativo ? "Não" : "Sim",
+        cliente: item.cliente,
+        inicio: date,
+        status: statusItem,
         acoes: (
           <MDBox className="exportLinkInternal">
-            <Link to={"/usuarios/" + item.id + "/editar-usuario"} className="exportLinkInternal">
+            <Link
+              to={"/transportes/" + item.id + "/editar-transporte"}
+              className="exportLinkInternal"
+            >
               <MDButton variant="gradient" color="primary">
                 <Icon fontSize="medium" color="inherit">
                   edit
@@ -111,7 +130,7 @@ function Usuarios({allowedRoles}) {
     });
   }
 
-  const exportName = "Usuários";
+  const exportName = "Transportes";
   const type = "xls";
 
   const handleExportXlsx = () => {
@@ -161,7 +180,7 @@ function Usuarios({allowedRoles}) {
 
     fetch(
       API_URL +
-        "/usuarios?" +
+        "/transportes?" +
         new URLSearchParams({
           search: searchInput,
         }),
@@ -188,7 +207,7 @@ function Usuarios({allowedRoles}) {
   };
 
   const buscaItens = () => {
-    fetch(API_URL + "/usuarios", {
+    fetch(API_URL + "/transportes", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -210,7 +229,7 @@ function Usuarios({allowedRoles}) {
   };
 
   useEffect(() => {
-    document.title = "TFWebLog - Usuários";
+    document.title = "TFWebLog - Transportes";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -218,9 +237,8 @@ function Usuarios({allowedRoles}) {
     })
     .then((res) => res.json())
     .then((json) => {
-      if(!allowedRoles.includes(json.cargo)){
-        navigate("/login", { replace: true });
-      }
+      setCargo(json.cargo);
+      console.log(cargo);
     })
     .catch();
 
@@ -231,7 +249,7 @@ function Usuarios({allowedRoles}) {
     e.preventDefault();
 
     if (confirm("Deseja realmente excluir o registro?")) {
-      fetch(API_URL + "/usuarios/" + id, {
+      fetch(API_URL + "/transportes/" + id, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -273,9 +291,9 @@ function Usuarios({allowedRoles}) {
       <DashboardLayout>
         <DashboardNavbar />
         <MDBox pt={2} className="wrapperHeader">
-          <Link to="/usuarios/criar-usuario">
+          <Link to="/transportes/criar-transporte">
             <MDButton variant="gradient" color="primary">
-              + Novo Usuário
+              + Novo Transporte
             </MDButton>
           </Link>
 
@@ -337,4 +355,4 @@ function Usuarios({allowedRoles}) {
   }
 }
 
-export default Usuarios;
+export default Transportes;
