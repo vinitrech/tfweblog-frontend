@@ -1,6 +1,9 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-alert */
+/* eslint-disable camelcase */
 /* eslint-disable no-else-return */
+/* eslint-disable react/prop-types */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-template */
 /**
 =========================================================
@@ -28,44 +31,38 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 // Data
 import { useEffect, useState } from "react";
 import MDInput from "components/MDInput";
-import { CircularProgress, Grid, Switch } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { CircularProgress, Grid } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
 import Select from "react-select";
 import MDTypography from "components/MDTypography";
-import CpfValidator from "utils/validateCpf";
-import { useAuth } from "utils/auth";
 import MDAlert from "components/MDAlert";
+import { useAuth } from "utils/auth";
 
-function UsuariosEdit({ allowedRoles }) {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [ativo, setAtivo] = useState(true);
-  const API_URL = process.env.REACT_APP_API_URL;
-  const navigate = useNavigate();
-  const auth = useAuth();
+function UsuariosCreate({allowedRoles}) {
+  const [id_categoria, setCategoria] = useState("");
+  const [categorias, setCategorias] = useState([]);
+  const [id_cidade, setCidade] = useState("");
+  const [cidades, setCidades] = useState([]);
+  const [id_cliente, setCliente] = useState("");
+  const [clientes, setClientes] = useState([]);
+  const [id_motorista, setMotorista] = useState("");
+  const [motoristas, setMotoristas] = useState([]);
+  const [id_veiculo, setVeiculo] = useState("");
+  const [veiculos, setVeiculos] = useState([]);
+  const [id_administrador, setAdministrador] = useState("");
+  const [administradores, setAdministradores] = useState([]);
+  const [id_supervisor, setSupervisor] = useState("");
+  const [supervisores, setSupervisores] = useState([]);
+  const [data_inicio, setDataInicio] = useState("");
+  const data_finalizacao = "";
+  const status = "aguardando";
   const [erroCadastro, setErroCadastro] = useState(false);
-  const { id } = useParams();
+  const auth = useAuth();
   const [isLoading, setLoading] = useState(true);
 
-  const handleOnlyNumbers = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setCpf(value);
-  };
-
-  const handleCpf = (input) => {
-    if (input.target.value.length > 0) {
-      if (CpfValidator(input.target.value)) {
-        setCpf(input.target.value);
-      } else {
-        setCpf("");
-        alert("CPF inválido.");
-      }
-    }
-  };
+  const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     auth.logout();
@@ -79,16 +76,46 @@ function UsuariosEdit({ allowedRoles }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (cargo === "") {
-      alert("O cargo precisa ser preenchido.");
+    if (id_categoria === "") {
+      alert("Selecione uma categoria.");
+      return;
+    }
+
+    if (id_cidade === "") {
+      alert("Selecione uma cidade.");
+      return;
+    }
+
+    if (id_cliente === "") {
+      alert("Selecione um cliente.");
+      return;
+    }
+
+    if (id_motorista === "") {
+      alert("Selecione um motorista.");
+      return;
+    }
+
+    if (id_veiculo === "") {
+      alert("Selecione um veículo.");
+      return;
+    }
+
+    if (id_administrador === "") {
+      alert("Selecione um administrador.");
+      return;
+    }
+
+    if (id_supervisor === "") {
+      alert("Selecione um supervisor.");
       return;
     }
 
     setErroCadastro(false);
-    const cadastro = { email, senha, nome, cpf, cargo, ativo };
+    const cadastro = { id_categoria, id_cidade, id_cliente, id_motorista, id_veiculo, id_administrador, id_supervisor, data_inicio, data_finalizacao, status };
 
-    fetch(API_URL + "/usuarios/" + id, {
-      method: "PUT",
+    fetch(API_URL + "/usuarios", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -97,7 +124,7 @@ function UsuariosEdit({ allowedRoles }) {
     })
       .then((res) => {
         if (res.status === 204) {
-          alert("Usuário atualizado com sucesso.");
+          alert("Usuário criado com sucesso.");
           navigate("/usuarios", { replace: true });
         } else if (res.status !== 401) {
           setErroCadastro(true);
@@ -108,34 +135,8 @@ function UsuariosEdit({ allowedRoles }) {
       .catch();
   };
 
-  const buscaItem = () => {
-    fetch(API_URL + "/usuarios/" + id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    })
-      .then((response) => {
-        if (response.status !== 401) {
-          response.json().then((resultItem) => {
-            setNome(resultItem.nome);
-            setCpf(resultItem.cpf);
-            setEmail(resultItem.email);
-            setSenha("");
-            setCargo(resultItem.cargo);
-            setAtivo(resultItem.ativo);
-            setLoading(false);
-          });
-        } else {
-          handleLogout();
-        }
-      })
-      .catch();
-  };
-
   useEffect(() => {
-    document.title = "TFWebLog - Editar Usuário";
+    document.title = "TFWebLog - Criar Usuário";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -144,12 +145,12 @@ function UsuariosEdit({ allowedRoles }) {
       .then((res) => res.json())
       .then((json) => {
         if (!allowedRoles.includes(json.cargo)) {
-          navigate("/login", { replace: true });
+          handleLogout();
+        }else{
+          setLoading(false);
         }
       })
       .catch();
-
-    buscaItem();
   }, []);
 
   const options = [
@@ -181,10 +182,10 @@ function UsuariosEdit({ allowedRoles }) {
         <DashboardNavbar />
         <MDBox
           component="form"
+          onSubmit={handleSubmit}
           role="form"
           pt={3}
           pb={3}
-          onSubmit={handleSubmit}
           sx={() => ({
             fontSize: "16px !important",
           })}
@@ -200,64 +201,19 @@ function UsuariosEdit({ allowedRoles }) {
                 margin: "10px 0 30px 0",
               })}
             >
-              Email já utilizado.
+              Houve um erro no cadastro.
             </MDAlert>
           )}
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Nome"
-                  fullWidth
-                  required
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
 
           <Grid container spacing={3} mb={3}>
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={0}>
                 <MDInput
-                  type="text"
-                  label="CPF (somente números)"
-                  required
-                  onBlur={(e) => handleCpf(e)}
-                  onChange={(e) => handleOnlyNumbers(e)}
-                  value={cpf}
-                  fullWidth
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Email"
-                  value={email}
+                  type="date"
+                  label="Data de Início"
                   fullWidth
                   required
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Senha (deixe em branco para não alterar)"
-                  value={senha}
-                  fullWidth
-                  onChange={(e) => setSenha(e.target.value)}
+                  onChange={(e) => setDataInicio(e.target.value)}
                 />
               </MDBox>
             </Grid>
@@ -279,22 +235,10 @@ function UsuariosEdit({ allowedRoles }) {
                 </MDTypography>
                 <Select
                   options={options}
-                  defaultValue={options.find((element) => element.value === cargo)}
                   placeholder="Selecione..."
                   name="cargo"
                   onChange={(e) => handleSelect(e)}
                 />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <Switch checked={ativo} onChange={() => setAtivo(!ativo)} />
-                <MDTypography variant="button" fontWeight="regular" color="text">
-                  Ativo
-                </MDTypography>
               </MDBox>
             </Grid>
           </Grid>
@@ -314,4 +258,4 @@ function UsuariosEdit({ allowedRoles }) {
   }
 }
 
-export default UsuariosEdit;
+export default UsuariosCreate;

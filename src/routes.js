@@ -38,6 +38,7 @@
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import Transportes from "layouts/transportes";
+import TransportesCreate from "layouts/transportes/create";
 import TransportesEdit from "layouts/transportes/edit";
 import Documentos from "layouts/documentos";
 import DocumentosEdit from "layouts/documentos/edit";
@@ -107,7 +108,7 @@ const routes = [
     route: "/transportes/criar-transporte",
     component: (
       <RequireAuth>
-        <TransportesEdit />
+        <TransportesCreate allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
@@ -120,7 +121,7 @@ const routes = [
     route: "/transportes/:id/editar-transporte",
     component: (
       <RequireAuth>
-        <TransportesEdit />
+        <TransportesEdit allowedRoles={["administrador", "supervisor"]} />
       </RequireAuth>
     ),
   },
