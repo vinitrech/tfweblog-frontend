@@ -97,7 +97,7 @@ function Transportes() {
             minWidth: "30px",
             height: "30px",
             minHeight: "30px",
-          })} onClick={(e) => enviarInicioSupervisor(e)}>
+          })} onClick={(e) => enviarInicioSupervisor(e, item.id)}>
               <Icon fontSize="medium" color="inherit">
                 chevron_right
               </Icon>
@@ -128,7 +128,7 @@ function Transportes() {
                   height: "30px",
                   minHeight: "30px",
                 })}
-                onClick={(e) => aprovarInicio(e)}
+                onClick={(e) => aprovarInicio(e, item.id)}
               >
                 <Icon fontSize="medium" color="inherit">
                   chevron_right
@@ -151,7 +151,7 @@ function Transportes() {
             minWidth: "30px",
             height: "30px",
             minHeight: "30px",
-          })} onClick={(e) => enviarFinalizacaoSupervisor(e)}>
+          })} onClick={(e) => enviarFinalizacaoSupervisor(e, item.id)}>
               <Icon fontSize="medium" color="inherit">
                 chevron_right
               </Icon>
@@ -182,7 +182,7 @@ function Transportes() {
                   height: "30px",
                   minHeight: "30px",
                 })}
-                onClick={(e) => finalizar(e)}
+                onClick={(e) => finalizar(e, item.id)}
               >
                 <Icon fontSize="medium" color="inherit">
                   chevron_right
