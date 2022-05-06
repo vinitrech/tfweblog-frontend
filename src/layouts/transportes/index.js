@@ -365,8 +365,10 @@ function Transportes() {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
-            setItemsToExport(itemsArray);
-            handleRows(itemsArray, cargo);
+            if(itemsArray !== null){
+              setItemsToExport(itemsArray);
+              handleRows(itemsArray, cargo);
+            }
             setLoading(false);
           });
         } else {
@@ -387,8 +389,10 @@ function Transportes() {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
-            setItemsToExport(itemsArray);
-            handleRows(itemsArray, userRole);
+            if(itemsArray !== null){
+              setItemsToExport(itemsArray);
+              handleRows(itemsArray, userRole);
+            }
             setLoading(false);
           });
         } else {
