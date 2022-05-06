@@ -1,6 +1,12 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-alert */
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-var */
+/* eslint-disable array-callback-return */
+/* eslint-disable camelcase */
 /* eslint-disable no-else-return */
+/* eslint-disable react/prop-types */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
 /* eslint-disable prefer-template */
 /**
 =========================================================
@@ -28,67 +34,114 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 // Data
 import { useEffect, useState } from "react";
 import MDInput from "components/MDInput";
-import { CircularProgress, Grid, Switch } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import MDButton from "components/MDButton";
 import Select from "react-select";
+import AsyncSelect from "react-select/async";
 import MDTypography from "components/MDTypography";
-import CpfValidator from "utils/validateCpf";
-import { useAuth } from "utils/auth";
 import MDAlert from "components/MDAlert";
+import { useAuth } from "utils/auth";
 
-function UsuariosEdit({ allowedRoles }) {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [ativo, setAtivo] = useState(true);
+function TransportesCreate({ allowedRoles }) {
+  const [id_categoria, setCategoria] = useState("");
+  const [categorias, setCategorias] = useState([]);
+  const [id_cidade, setCidade] = useState("");
+  const [cidadeSelecionada, setCidadeSelecionada] = useState(null);
+  const [id_cliente, setCliente] = useState("");
+  const [clientes, setClientes] = useState([]);
+  const [id_motorista, setMotorista] = useState("");
+  const [motoristas, setMotoristas] = useState([]);
+  const [id_veiculo, setVeiculo] = useState("");
+  const [veiculos, setVeiculos] = useState([]);
+  const [data_inicio, setDataInicio] = useState("");
+  const [data_finalizacao, setDataFinalizacao] = useState("");
+  const [status, setStatus] = useState("");
+  const [erroCadastro, setErroCadastro] = useState(false);
+  const auth = useAuth();
+  const [isLoading, setLoading] = useState(true);
+  const { id } = useParams();
+
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
-  const auth = useAuth();
-  const [erroCadastro, setErroCadastro] = useState(false);
-  const { id } = useParams();
-  const [isLoading, setLoading] = useState(true);
-
-  const handleOnlyNumbers = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    setCpf(value);
-  };
-
-  const handleCpf = (input) => {
-    if (input.target.value.length > 0) {
-      if (CpfValidator(input.target.value)) {
-        setCpf(input.target.value);
-      } else {
-        setCpf("");
-        alert("CPF inválido.");
-      }
-    }
-  };
 
   const handleLogout = () => {
     auth.logout();
     navigate("/login", { replace: true });
   };
 
-  const handleSelect = (input) => {
-    setCargo(input.value);
+  const handleCategoria = (input) => {
+    setCategoria(input.value);
+  };
+
+  const handleCliente = (input) => {
+    setCliente(input.value);
+  };
+
+  const handleMotorista = (input) => {
+    setMotorista(input.value);
+  };
+
+  const handleVeiculo = (input) => {
+    setVeiculo(input.value);
+  };
+
+  const handleCidadeChange = (input) => {
+    setCidade(input.ID);
+    setCidadeSelecionada(input);
+  };
+
+  const loadCidades = (inputValue) => {
+    return fetch(API_URL + "/cidades?search=" + inputValue, {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .catch();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (cargo === "") {
-      alert("O cargo precisa ser preenchido.");
+    if (id_categoria === "") {
+      alert("Selecione uma categoria.");
+      return;
+    }
+
+    if (id_cidade === "") {
+      alert("Selecione uma cidade.");
+      return;
+    }
+
+    if (id_cliente === "") {
+      alert("Selecione um cliente.");
+      return;
+    }
+
+    if (id_motorista === "") {
+      alert("Selecione um motorista.");
+      return;
+    }
+
+    if (id_veiculo === "") {
+      alert("Selecione um veículo.");
       return;
     }
 
     setErroCadastro(false);
-    const cadastro = { email, senha, nome, cpf, cargo, ativo };
+    const cadastro = {
+      id_categoria,
+      id_cidade,
+      id_cliente,
+      id_motorista,
+      id_veiculo,
+      data_inicio,
+      data_finalizacao,
+      status,
+    };
 
-    fetch(API_URL + "/usuarios/" + id, {
-      method: "PUT",
+    fetch(API_URL + "/transportes", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -97,8 +150,8 @@ function UsuariosEdit({ allowedRoles }) {
     })
       .then((res) => {
         if (res.status === 204) {
-          alert("Usuário atualizado com sucesso.");
-          navigate("/usuarios", { replace: true });
+          alert("Transporte criado com sucesso.");
+          navigate("/transportes", { replace: true });
         } else if (res.status !== 401) {
           setErroCadastro(true);
         } else {
@@ -108,8 +161,92 @@ function UsuariosEdit({ allowedRoles }) {
       .catch();
   };
 
+  const buscaCategorias = () => {
+    fetch(API_URL + "/categorias", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((itemsArray) => {
+        const categoriasTemp = [];
+
+        itemsArray.map((item) => {
+          categoriasTemp.push({
+            value: item.id,
+            label: item.descricao,
+          });
+        });
+
+        setCategorias(categoriasTemp);
+      })
+      .catch();
+  };
+
+  const buscaClientes = () => {
+    fetch(API_URL + "/clientes/getClientes", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((itemsArray) => {
+        const clientesTemp = [];
+
+        itemsArray.map((item) => {
+          clientesTemp.push({
+            value: item.id,
+            label: item.nome,
+          });
+        });
+
+        setClientes(clientesTemp);
+      })
+      .catch();
+  };
+
+  const buscaMotoristas = () => {
+    fetch(API_URL + "/usuarios/getMotoristas", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((itemsArray) => {
+        const motoristasTemp = [];
+
+        itemsArray.map((item) => {
+          motoristasTemp.push({
+            value: item.id,
+            label: item.nome,
+          });
+        });
+
+        setMotoristas(motoristasTemp);
+      })
+      .catch();
+  };
+
+  const buscaVeiculos = () => {
+    fetch(API_URL + "/veiculos/getVeiculos", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((itemsArray) => {
+        const veiculosTemp = [];
+
+        itemsArray.map((item) => {
+          veiculosTemp.push({
+            value: item.id,
+            label: item.placa,
+          });
+        });
+
+        setVeiculos(veiculosTemp);
+      })
+      .catch();
+  };
+
   const buscaItem = () => {
-    fetch(API_URL + "/usuarios/" + id, {
+    fetch(API_URL + "/transportes/" + id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -119,12 +256,14 @@ function UsuariosEdit({ allowedRoles }) {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((resultItem) => {
-            setNome(resultItem.nome);
-            setCpf(resultItem.cpf);
-            setEmail(resultItem.email);
-            setSenha("");
-            setCargo(resultItem.cargo);
-            setAtivo(resultItem.ativo);
+            setCategoria(resultItem.id_categoria);
+            setCidade(resultItem.id_cidade);
+            setCliente(resultItem.id_cliente);
+            setMotorista(resultItem.id_motorista);
+            setVeiculo(resultItem.id_veiculo);
+            setDataInicio(resultItem.data_inicio);
+            setStatus(resultItem.status);
+            setDataFinalizacao(resultItem.data_finalizacao);
             setLoading(false);
           });
         } else {
@@ -134,8 +273,20 @@ function UsuariosEdit({ allowedRoles }) {
       .catch();
   };
 
+  console.log(
+    id,
+    id_categoria,
+    id_cidade,
+    id_cliente,
+    id_motorista,
+    id_veiculo,
+    data_inicio,
+    data_finalizacao,
+    status
+  );
+
   useEffect(() => {
-    document.title = "TFWebLog - Editar Usuário";
+    document.title = "TFWebLog - Criar Transporte";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -144,19 +295,19 @@ function UsuariosEdit({ allowedRoles }) {
       .then((res) => res.json())
       .then((json) => {
         if (!allowedRoles.includes(json.cargo)) {
-          navigate("/login", { replace: true });
+          handleLogout();
+        } else {
+          buscaCategorias();
+          buscaClientes();
+          buscaMotoristas();
+          buscaVeiculos();
+          buscaItem();
+
+          setLoading(false);
         }
       })
       .catch();
-
-    buscaItem();
   }, []);
-
-  const options = [
-    { value: "administrador", label: "Administrador" },
-    { value: "supervisor", label: "Supervisor" },
-    { value: "motorista", label: "Motorista" },
-  ];
 
   if (isLoading) {
     return (
@@ -181,10 +332,10 @@ function UsuariosEdit({ allowedRoles }) {
         <DashboardNavbar />
         <MDBox
           component="form"
+          onSubmit={handleSubmit}
           role="form"
           pt={3}
           pb={3}
-          onSubmit={handleSubmit}
           sx={() => ({
             fontSize: "16px !important",
           })}
@@ -200,64 +351,50 @@ function UsuariosEdit({ allowedRoles }) {
                 margin: "10px 0 30px 0",
               })}
             >
-              Email já utilizado.
+              Houve um erro no cadastro.
             </MDAlert>
           )}
+
           <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={6} lg={3}>
               <MDBox mb={0}>
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Data de Início
+                </MDTypography>
                 <MDInput
-                  type="text"
-                  label="Nome"
+                  type="date"
                   fullWidth
                   required
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
+                  onChange={(e) => setDataInicio(e.target.value)}
                 />
               </MDBox>
             </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={6} lg={3}>
               <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="CPF (somente números)"
-                  required
-                  onBlur={(e) => handleCpf(e)}
-                  onChange={(e) => handleOnlyNumbers(e)}
-                  value={cpf}
-                  fullWidth
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Email"
-                  value={email}
-                  fullWidth
-                  required
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={0}>
-                <MDInput
-                  type="text"
-                  label="Senha (deixe em branco para não alterar)"
-                  value={senha}
-                  fullWidth
-                  onChange={(e) => setSenha(e.target.value)}
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Categoria
+                </MDTypography>
+                <Select
+                  options={categorias}
+                  placeholder="Selecione..."
+                  maxLength={15}
+                  onChange={(e) => handleCategoria(e)}
                 />
               </MDBox>
             </Grid>
@@ -275,26 +412,85 @@ function UsuariosEdit({ allowedRoles }) {
                     marginBottom: "10px",
                   })}
                 >
-                  Cargo
+                  Cidade
+                </MDTypography>
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions
+                  value={cidadeSelecionada}
+                  getOptionLabel={(e) => e.Nome}
+                  getOptionValue={(e) => e.ID}
+                  loadOptions={loadCidades}
+                  onChange={handleCidadeChange}
+                />
+              </MDBox>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={3}>
+              <MDBox mb={0}>
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Cliente
                 </MDTypography>
                 <Select
-                  options={options}
-                  defaultValue={options.find((element) => element.value === cargo)}
+                  options={clientes}
                   placeholder="Selecione..."
-                  name="cargo"
-                  onChange={(e) => handleSelect(e)}
+                  maxLength={15}
+                  onChange={(e) => handleCliente(e)}
                 />
               </MDBox>
             </Grid>
           </Grid>
 
           <Grid container spacing={3} mb={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={6} lg={3}>
               <MDBox mb={0}>
-                <Switch checked={ativo} onChange={() => setAtivo(!ativo)} />
-                <MDTypography variant="button" fontWeight="regular" color="text">
-                  Ativo
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Motorista
                 </MDTypography>
+                <Select
+                  options={motoristas}
+                  placeholder="Selecione..."
+                  maxLength={15}
+                  onChange={(e) => handleMotorista(e)}
+                />
+              </MDBox>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={3}>
+              <MDBox mb={0}>
+                <MDTypography
+                  color="primary"
+                  sx={() => ({
+                    fontSize: "14px",
+                    fontWeight: "300",
+                    marginLeft: "5px",
+                    marginBottom: "10px",
+                  })}
+                >
+                  Veículo
+                </MDTypography>
+                <Select
+                  options={veiculos}
+                  placeholder="Selecione..."
+                  maxLength={15}
+                  onChange={(e) => handleVeiculo(e)}
+                />
               </MDBox>
             </Grid>
           </Grid>
@@ -314,4 +510,4 @@ function UsuariosEdit({ allowedRoles }) {
   }
 }
 
-export default UsuariosEdit;
+export default TransportesCreate;
