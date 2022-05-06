@@ -65,7 +65,7 @@ function Transportes() {
 
   const [rows, setRows] = useState([]);
 
-  const handleRows = (itemsArray) => {
+  const handleRows = (itemsArray, role) => {
     const temporaryRows = [];
 
     itemsArray.map((item) => {
@@ -79,11 +79,11 @@ function Transportes() {
 
         let dateFinalizacao = new Date(item.data_finalizacao);
       dateFinalizacao =
-        date.getDate() +
+        dateFinalizacao.getDate() +
         "/" +
-        (date.getMonth() + 1) +
+        (dateFinalizacao.getMonth() + 1) +
         "/" +
-        date.getFullYear();
+        dateFinalizacao.getFullYear();
 
       let statusItem = "";
 
@@ -99,7 +99,7 @@ function Transportes() {
               />
             </MDBox>
             
-            {cargo !== "supervisor" && <MDButton variant="gradient" color="success" sx={() => ({
+            {role !== "supervisor" && <MDButton variant="gradient" color="success" sx={() => ({
             marginTop: "5px",
             padding: "5px",
             width: "30px",
@@ -125,7 +125,7 @@ function Transportes() {
               />
             </MDBox>
 
-            {cargo !== "motorista" && (
+            {role !== "motorista" && (
               <MDButton
                 variant="gradient"
                 color="success"
@@ -150,10 +150,10 @@ function Transportes() {
         statusItem = (
           <>
             <MDBox ml={-1}>
-              <MDBadge badgeContent="em andamento" color="primary" variant="gradient" size="sm" />
+              <MDBadge badgeContent="em andamento" color="info" variant="gradient" size="sm" />
             </MDBox>
 
-            {cargo !== "supervisor" && <MDButton variant="gradient" color="success" sx={() => ({
+            {role !== "supervisor" && <MDButton variant="gradient" color="success" sx={() => ({
             marginTop: "5px",
             padding: "5px",
             width: "30px",
@@ -179,7 +179,7 @@ function Transportes() {
               />
             </MDBox>
 
-            {cargo !== "motorista" && (
+            {role !== "motorista" && (
               <MDButton
                 variant="gradient"
                 color="success"
@@ -227,16 +227,18 @@ function Transportes() {
         status: statusItem,
         acoes: (
           <MDBox className="exportLinkInternal">
-            <Link
-              to={"/transportes/" + item.id + "/editar-transporte"}
-              className="exportLinkInternal"
-            >
-              <MDButton variant="gradient" color="primary">
-                <Icon fontSize="medium" color="inherit">
-                  edit
-                </Icon>
-              </MDButton>
-            </Link>
+            {role !== "motorista" && (
+              <Link
+                to={"/transportes/" + item.id + "/editar-transporte"}
+                className="exportLinkInternal"
+              >
+                <MDButton variant="gradient" color="primary">
+                  <Icon fontSize="medium" color="inherit">
+                    edit
+                  </Icon>
+                </MDButton>
+              </Link>
+            )}
             <Link to={"/transportes/" + item.id + "/documentos"} className="exportLinkInternal">
               <MDButton variant="gradient" color="secondary">
                 <Icon fontSize="medium" color="inherit">
@@ -258,24 +260,28 @@ function Transportes() {
                 </Icon>
               </MDButton>
             </Link>
-            <Link to={"/transportes/" + item.id + "/avaliacoes"} className="exportLinkInternal">
-              <MDButton variant="gradient" color="success">
+            {item.status === "finalizado" && (
+              <Link to={"/transportes/" + item.id + "/avaliacoes"} className="exportLinkInternal">
+                <MDButton variant="gradient" color="success">
+                  <Icon fontSize="medium" color="inherit">
+                    workspace_premium
+                  </Icon>
+                </MDButton>
+              </Link>
+            )}
+            {role !== "motorista" && (
+              <MDButton
+                variant="gradient"
+                color="error"
+                onClick={(e) => {
+                  handleErase(e, item.id);
+                }}
+              >
                 <Icon fontSize="medium" color="inherit">
-                  workspace_premium
+                  delete
                 </Icon>
               </MDButton>
-            </Link>
-            <MDButton
-              variant="gradient"
-              color="error"
-              onClick={(e) => {
-                handleErase(e, item.id);
-              }}
-            >
-              <Icon fontSize="medium" color="inherit">
-                delete
-              </Icon>
-            </MDButton>
+            )}
           </MDBox>
         ),
       });
@@ -350,7 +356,7 @@ function Transportes() {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
             setItemsToExport(itemsArray);
-            handleRows(itemsArray);
+            handleRows(itemsArray, cargo);
             setLoading(false);
           });
         } else {
@@ -360,7 +366,7 @@ function Transportes() {
       .catch();
   };
 
-  const buscaItens = () => {
+  const buscaItens = (userRole) => {
     fetch(API_URL + "/transportes", {
       method: "GET",
       headers: {
@@ -372,7 +378,7 @@ function Transportes() {
         if (response.status !== 401) {
           response.json().then((itemsArray) => {
             setItemsToExport(itemsArray);
-            handleRows(itemsArray);
+            handleRows(itemsArray, userRole);
             setLoading(false);
           });
         } else {
@@ -392,11 +398,9 @@ function Transportes() {
     .then((res) => res.json())
     .then((json) => {
       setCargo(json.cargo);
-      console.log(cargo);
+      buscaItens(json.cargo);
     })
     .catch();
-
-    buscaItens();
   }, []);
 
   const handleErase = (e, id) => {
@@ -414,7 +418,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Registro excluído com sucesso.");
             setLoading(true);
-            buscaItens();
+            buscaItens(cargo);
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -427,10 +431,9 @@ function Transportes() {
     e.preventDefault();
 
     if (confirm("Deseja realmente avançar a etapa?")) {
-      fetch(API_URL + "/transportes/" + id + "/enviar-inicio-supervisor", {
-        method: "GET",
+      fetch(API_URL + "/transportes/enviar-inicio-supervisor/" + id, {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
@@ -438,7 +441,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens();
+            buscaItens(cargo);
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -451,10 +454,9 @@ function Transportes() {
     e.preventDefault();
 
     if (confirm("Deseja realmente avançar a etapa?")) {
-      fetch(API_URL + "/transportes/" + id + "/aprovar-inicio", {
-        method: "GET",
+      fetch(API_URL + "/transportes/aprovar-inicio/" + id, {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
@@ -462,7 +464,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens();
+            buscaItens(cargo);
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -475,10 +477,9 @@ function Transportes() {
     e.preventDefault();
 
     if (confirm("Deseja realmente avançar a etapa?")) {
-      fetch(API_URL + "/transportes/" + id + "/enviar-finalizacao-supervisor", {
-        method: "GET",
+      fetch(API_URL + "/transportes/enviar-finalizacao-supervisor/" + id, {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
@@ -486,7 +487,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens();
+            buscaItens(cargo);
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -499,10 +500,9 @@ function Transportes() {
     e.preventDefault();
 
     if (confirm("Deseja realmente avançar a etapa?")) {
-      fetch(API_URL + "/transportes/" + id + "/finalizar", {
-        method: "GET",
+      fetch(API_URL + "/transportes/finalizar/" + id, {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
@@ -510,7 +510,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens();
+            buscaItens(cargo);
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -542,9 +542,11 @@ function Transportes() {
         <DashboardNavbar />
         <MDBox pt={2} className="wrapperHeader">
           <Link to="/transportes/criar-transporte">
-            <MDButton variant="gradient" color="primary">
-              + Novo Transporte
-            </MDButton>
+            {cargo !== "motorista" && (
+              <MDButton variant="gradient" color="primary">
+                + Novo Transporte
+              </MDButton>
+            )}
           </Link>
 
           <MDBox
