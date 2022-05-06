@@ -89,53 +89,55 @@ function Transportes() {
 
       if(item.status === "aguardando motorista"){
         statusItem = (
-          <>
-            <MDBox ml={-1}>
-              <MDBadge
-                badgeContent="aguardando motorista"
-                color="secondary"
+          <MDBox ml={-1}>
+            <MDBadge
+              badgeContent="aguardando motorista"
+              color="secondary"
+              variant="gradient"
+              size="sm"
+            />
+            {role !== "supervisor" && (
+              <MDButton
                 variant="gradient"
-                size="sm"
-              />
-            </MDBox>
-            
-            {role !== "supervisor" && <MDButton variant="gradient" color="success" sx={() => ({
-            marginTop: "5px",
-            padding: "5px",
-            width: "30px",
-            minWidth: "30px",
-            height: "30px",
-            minHeight: "30px",
-          })} onClick={(e) => enviarInicioSupervisor(e, item.id)}>
-              <Icon fontSize="medium" color="inherit">
-                chevron_right
-              </Icon>
-            </MDButton>}
-          </>
+                color="success"
+                sx={() => ({
+                  marginLeft: "5px",
+                  padding: "5px",
+                  width: "20px",
+                  minWidth: "20px",
+                  height: "20px",
+                  minHeight: "20px",
+                })}
+                onClick={(e) => enviarInicioSupervisor(e, item.id)}
+              >
+                <Icon fontSize="medium" color="inherit">
+                  chevron_right
+                </Icon>
+              </MDButton>
+            )}
+          </MDBox>
         );
       }else if(item.status === "aguardando aprovação"){
         statusItem = (
-          <>
-            <MDBox ml={-1}>
-              <MDBadge
-                badgeContent="aguardando aprovação"
-                color="primary"
-                variant="gradient"
-                size="sm"
-              />
-            </MDBox>
+          <MDBox ml={-1}>
+            <MDBadge
+              badgeContent="aguardando aprovação"
+              color="primary"
+              variant="gradient"
+              size="sm"
+            />
 
             {role !== "motorista" && (
               <MDButton
                 variant="gradient"
                 color="success"
                 sx={() => ({
-                  marginTop: "5px",
+                  marginLeft: "5px",
                   padding: "5px",
-                  width: "30px",
-                  minWidth: "30px",
-                  height: "30px",
-                  minHeight: "30px",
+                  width: "20px",
+                  minWidth: "20px",
+                  height: "20px",
+                  minHeight: "20px",
                 })}
                 onClick={(e) => aprovarInicio(e, item.id)}
               >
@@ -144,52 +146,55 @@ function Transportes() {
                 </Icon>
               </MDButton>
             )}
-          </>
+          </MDBox>
         );
       }else if(item.status === "em andamento"){
         statusItem = (
-          <>
-            <MDBox ml={-1}>
-              <MDBadge badgeContent="em andamento" color="info" variant="gradient" size="sm" />
-            </MDBox>
+          <MDBox ml={-1}>
+            <MDBadge badgeContent="em andamento" color="info" variant="gradient" size="sm" />
 
-            {role !== "supervisor" && <MDButton variant="gradient" color="success" sx={() => ({
-            marginTop: "5px",
-            padding: "5px",
-            width: "30px",
-            minWidth: "30px",
-            height: "30px",
-            minHeight: "30px",
-          })} onClick={(e) => enviarFinalizacaoSupervisor(e, item.id)}>
-              <Icon fontSize="medium" color="inherit">
-                chevron_right
-              </Icon>
-            </MDButton>}
-          </>
+            {role !== "supervisor" && (
+              <MDButton
+                variant="gradient"
+                color="success"
+                sx={() => ({
+                  marginLeft: "5px",
+                  padding: "5px",
+                  width: "20px",
+                  minWidth: "20px",
+                  height: "20px",
+                  minHeight: "20px",
+                })}
+                onClick={(e) => enviarFinalizacaoSupervisor(e, item.id)}
+              >
+                <Icon fontSize="medium" color="inherit">
+                  chevron_right
+                </Icon>
+              </MDButton>
+            )}
+          </MDBox>
         );
       }else if(item.status === "aguardando finalização"){
         statusItem = (
-          <>
-            <MDBox ml={-1}>
-              <MDBadge
-                badgeContent="aguardando finalização"
-                color="primary"
-                variant="gradient"
-                size="sm"
-              />
-            </MDBox>
+          <MDBox ml={-1}>
+            <MDBadge
+              badgeContent="aguardando finalização"
+              color="primary"
+              variant="gradient"
+              size="sm"
+            />
 
             {role !== "motorista" && (
               <MDButton
                 variant="gradient"
                 color="success"
                 sx={() => ({
-                  marginTop: "5px",
+                  marginLeft: "5px",
                   padding: "5px",
-                  width: "30px",
-                  minWidth: "30px",
-                  height: "30px",
-                  minHeight: "30px",
+                  width: "20px",
+                  minWidth: "20px",
+                  height: "20px",
+                  minHeight: "20px",
                 })}
                 onClick={(e) => finalizar(e, item.id)}
               >
@@ -198,7 +203,7 @@ function Transportes() {
                 </Icon>
               </MDButton>
             )}
-          </>
+          </MDBox>
         );
       }else{
         statusItem = (
@@ -448,7 +453,7 @@ function Transportes() {
 
     if (confirm("Deseja realmente avançar a etapa?")) {
       fetch(API_URL + "/transportes/enviar-inicio-supervisor/" + id, {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -457,7 +462,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens(cargo);
+            buscaItens("motorista");
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -471,7 +476,7 @@ function Transportes() {
 
     if (confirm("Deseja realmente avançar a etapa?")) {
       fetch(API_URL + "/transportes/aprovar-inicio/" + id, {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -480,7 +485,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens(cargo);
+            buscaItens("supervisor");
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -494,7 +499,7 @@ function Transportes() {
 
     if (confirm("Deseja realmente avançar a etapa?")) {
       fetch(API_URL + "/transportes/enviar-finalizacao-supervisor/" + id, {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -503,7 +508,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens(cargo);
+            buscaItens("motorista");
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -517,7 +522,7 @@ function Transportes() {
 
     if (confirm("Deseja realmente avançar a etapa?")) {
       fetch(API_URL + "/transportes/finalizar/" + id, {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -526,7 +531,7 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens(cargo);
+            buscaItens("supervisor");
           } else if (response.status === 401) {
             handleLogout();
           }
