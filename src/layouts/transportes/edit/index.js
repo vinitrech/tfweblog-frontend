@@ -381,6 +381,7 @@ function TransportesCreate({ allowedRoles }) {
                 </MDTypography>
                 <Select
                   options={categorias}
+                  value={categorias.find(e => e.value === id_categoria)}
                   placeholder="Selecione..."
                   maxLength={15}
                   onChange={(e) => handleCategoria(e)}
@@ -430,6 +431,7 @@ function TransportesCreate({ allowedRoles }) {
                 </MDTypography>
                 <Select
                   options={clientes}
+                  value={clientes.find(e => e.value === id_cliente)}
                   placeholder="Selecione..."
                   maxLength={15}
                   onChange={(e) => handleCliente(e)}
@@ -454,6 +456,7 @@ function TransportesCreate({ allowedRoles }) {
                 </MDTypography>
                 <Select
                   options={motoristas}
+                  value={motoristas.find(e => e.value === id_motorista)}
                   placeholder="Selecione..."
                   maxLength={15}
                   onChange={(e) => handleMotorista(e)}
@@ -476,6 +479,7 @@ function TransportesCreate({ allowedRoles }) {
                 </MDTypography>
                 <Select
                   options={veiculos}
+                  value={veiculos.find(e => e.value === id_veiculo)}
                   placeholder="Selecione..."
                   maxLength={15}
                   onChange={(e) => handleVeiculo(e)}
