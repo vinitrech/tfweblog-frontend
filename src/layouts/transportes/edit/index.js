@@ -140,8 +140,8 @@ function TransportesCreate({ allowedRoles }) {
       status,
     };
 
-    fetch(API_URL + "/transportes", {
-      method: "POST",
+    fetch(API_URL + "/transportes/" + id, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -150,7 +150,7 @@ function TransportesCreate({ allowedRoles }) {
     })
       .then((res) => {
         if (res.status === 204) {
-          alert("Transporte criado com sucesso.");
+          alert("Transporte alterado com sucesso.");
           navigate("/transportes", { replace: true });
         } else if (res.status !== 401) {
           setErroCadastro(true);
@@ -273,20 +273,8 @@ function TransportesCreate({ allowedRoles }) {
       .catch();
   };
 
-  console.log(
-    id,
-    id_categoria,
-    id_cidade,
-    id_cliente,
-    id_motorista,
-    id_veiculo,
-    data_inicio,
-    data_finalizacao,
-    status
-  );
-
   useEffect(() => {
-    document.title = "TFWebLog - Criar Transporte";
+    document.title = "TFWebLog - Editar Transporte";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -373,6 +361,7 @@ function TransportesCreate({ allowedRoles }) {
                   type="date"
                   fullWidth
                   required
+                  value={data_inicio}
                   onChange={(e) => setDataInicio(e.target.value)}
                 />
               </MDBox>
