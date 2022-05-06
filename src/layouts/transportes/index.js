@@ -315,13 +315,29 @@ function Transportes() {
         ":" +
         date.getSeconds();
 
+      let dateInicio = new Date(item.data_inicio);
+      dateInicio =
+        dateInicio.getDate() + "/" + (dateInicio.getMonth() + 1) + "/" + dateInicio.getFullYear();
+
+      const dateFinalizacao = new Date();
+
       arrayOfItems.push({
         identificador: item.id,
-        email: item.email,
-        nome: item.nome,
-        cpf: item.cpf,
-        data: date,
-        ativo: !item.ativo ? "Não" : "Sim",
+        categoria: item.categoria,
+        cidade: item.cidade,
+        cliente: item.cliente,
+        motorista: item.motorista,
+        veiculo: item.veiculo,
+        status: item.status,
+        data_criacao: date,
+        data_inicio: dateInicio,
+        data_finalizacao: item.data_finalizacao
+          ? dateFinalizacao.getDate() +
+            "/" +
+            (dateFinalizacao.getMonth() + 1) +
+            "/" +
+            dateFinalizacao.getFullYear()
+          : "",
       });
     });
 
