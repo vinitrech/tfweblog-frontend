@@ -45,7 +45,6 @@ import { CircularProgress, Icon } from "@mui/material";
 import MDInput from "components/MDInput";
 import { useAuth } from "utils/auth";
 import exportFromJSON from "export-from-json";
-import MDTypography from "components/MDTypography";
 
 function Transportes() {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -57,6 +56,7 @@ function Transportes() {
   const navigate = useNavigate();
   const columns = [
     { Header: "identificador", accessor: "identificador", align: "center" },
+    { Header: "categoria", accessor: "categoria", align: "left" },
     { Header: "cliente", accessor: "cliente", align: "left" },
     { Header: "inicio", accessor: "inicio", align: "center" },
     { Header: "status", accessor: "status", align: "center" },
@@ -70,20 +70,7 @@ function Transportes() {
 
     itemsArray.map((item) => {
       let date = new Date(item.data_inicio);
-      date =
-        date.getDate() +
-        "/" +
-        (date.getMonth() + 1) +
-        "/" +
-        date.getFullYear();
-
-        let dateFinalizacao = new Date(item.data_finalizacao);
-      dateFinalizacao =
-        dateFinalizacao.getDate() +
-        "/" +
-        (dateFinalizacao.getMonth() + 1) +
-        "/" +
-        dateFinalizacao.getFullYear();
+      date = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 
       let statusItem = "";
 
@@ -207,26 +194,27 @@ function Transportes() {
         );
       }else{
         statusItem = (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="finalizado" color="success" variant="gradient" size="sm" />
-
-            <MDTypography
-              color="primary"
-              sx={() => ({
-                fontSize: "14px",
-                fontWeight: "300",
-                marginLeft: "5px",
-                marginBottom: "10px",
-              })}
-            >
-              {dateFinalizacao}
-            </MDTypography>
+          <MDBox
+            ml={-1}
+            sx={() => ({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            })}
+          >
+            <MDBadge
+              badgeContent="finalizado"
+              color="success"
+              variant="gradient"
+              size="sm"
+            />
           </MDBox>
-        ); 
+        );
       }
-  
+
       temporaryRows.push({
         identificador: item.id,
+        categoria: item.categoria,
         cliente: item.cliente,
         inicio: date,
         status: statusItem,
@@ -281,6 +269,7 @@ function Transportes() {
                 onClick={(e) => {
                   handleErase(e, item.id);
                 }}
+                sx={() => ({ marginLeft: "5px" })}
               >
                 <Icon fontSize="medium" color="inherit">
                   delete
@@ -439,7 +428,16 @@ function Transportes() {
           if (response.status === 204) {
             alert("Registro excluído com sucesso.");
             setLoading(true);
-            buscaItens(cargo);
+            fetch(API_URL + "/getData", {
+              method: "GET",
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            })
+              .then((res) => res.json())
+              .then((json) => {
+                setCargo(json.cargo);
+                buscaItens(json.cargo);
+              })
+              .catch();
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -462,7 +460,17 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens("motorista");
+
+            fetch(API_URL + "/getData", {
+              method: "GET",
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            })
+              .then((res) => res.json())
+              .then((json) => {
+                setCargo(json.cargo);
+                buscaItens(json.cargo);
+              })
+              .catch();
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -485,7 +493,17 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens("supervisor");
+            
+            fetch(API_URL + "/getData", {
+              method: "GET",
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            })
+              .then((res) => res.json())
+              .then((json) => {
+                setCargo(json.cargo);
+                buscaItens(json.cargo);
+              })
+              .catch();
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -508,7 +526,17 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens("motorista");
+            
+            fetch(API_URL + "/getData", {
+              method: "GET",
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            })
+              .then((res) => res.json())
+              .then((json) => {
+                setCargo(json.cargo);
+                buscaItens(json.cargo);
+              })
+              .catch();
           } else if (response.status === 401) {
             handleLogout();
           }
@@ -531,7 +559,17 @@ function Transportes() {
           if (response.status === 204) {
             alert("Etapa avançada com sucesso.");
             setLoading(true);
-            buscaItens("supervisor");
+            
+            fetch(API_URL + "/getData", {
+              method: "GET",
+              headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+            })
+              .then((res) => res.json())
+              .then((json) => {
+                setCargo(json.cargo);
+                buscaItens(json.cargo);
+              })
+              .catch();
           } else if (response.status === 401) {
             handleLogout();
           }
