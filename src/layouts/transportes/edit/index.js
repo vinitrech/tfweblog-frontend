@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-var */
 /* eslint-disable array-callback-return */
@@ -245,6 +246,18 @@ function TransportesCreate({ allowedRoles }) {
       .catch();
   };
 
+  const setCidadeSelecionadaOnLoad = (idCidade) => {
+    fetch(API_URL + "/cidades?search=" + idCidade, {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setCidadeSelecionada(json[0]);
+      })
+      .catch();
+  }
+
   const buscaItem = () => {
     fetch(API_URL + "/transportes/" + id, {
       method: "GET",
@@ -258,6 +271,7 @@ function TransportesCreate({ allowedRoles }) {
           response.json().then((resultItem) => {
             setCategoria(resultItem.id_categoria);
             setCidade(resultItem.id_cidade);
+            setCidadeSelecionadaOnLoad(resultItem.id_cidade);
             setCliente(resultItem.id_cliente);
             setMotorista(resultItem.id_motorista);
             setVeiculo(resultItem.id_veiculo);
