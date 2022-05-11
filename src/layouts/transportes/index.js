@@ -253,15 +253,13 @@ function Transportes() {
                 </Icon>
               </MDButton>
             </Link>
-            {item.status === "finalizado" && (
-              <Link to={"/transportes/" + item.id + "/avaliacoes"} className="exportLinkInternal">
-                <MDButton variant="gradient" color="success">
-                  <Icon fontSize="medium" color="inherit">
-                    workspace_premium
-                  </Icon>
-                </MDButton>
-              </Link>
-            )}
+            <Link to={"/transportes/" + item.id + "/avaliacoes"} className="exportLinkInternal">
+              <MDButton variant="gradient" color="success">
+                <Icon fontSize="medium" color="inherit">
+                  workspace_premium
+                </Icon>
+              </MDButton>
+            </Link>
             {role !== "motorista" && (
               <MDButton
                 variant="gradient"

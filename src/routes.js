@@ -41,16 +41,14 @@ import Transportes from "layouts/transportes";
 import TransportesCreate from "layouts/transportes/create";
 import TransportesEdit from "layouts/transportes/edit";
 import Documentos from "layouts/documentos";
-import DocumentosEdit from "layouts/documentos/edit";
+import DocumentosCreate from "layouts/documentos/create";
 import Avisos from "layouts/avisos";
-import AvisosEdit from "layouts/avisos/edit";
-import AvisosView from "layouts/avisos/view";
+import AvisosCreate from "layouts/avisos/edit";
 import Incidentes from "layouts/incidentes";
 import IncidentesEdit from "layouts/incidentes/edit";
 import IncidentesView from "layouts/incidentes/view";
 import Avaliacoes from "layouts/avaliacoes";
-import AvaliacoesEdit from "layouts/avaliacoes/edit";
-import AvaliacoesView from "layouts/avaliacoes/view";
+import AvaliacoesCreate from "layouts/avaliacoes/create";
 import Categorias from "layouts/categorias";
 import CategoriasCreate from "layouts/categorias/create";
 import CategoriasEdit from "layouts/categorias/edit";
@@ -130,12 +128,12 @@ const routes = [
     name: "Documentos",
     key: "documentos",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/documentos",
     component: (
       <RequireAuth>
-        <Documentos />
+        <Documentos allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },
@@ -144,24 +142,11 @@ const routes = [
     name: "Criar Documento",
     key: "criar-documento",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     route: "/transportes/:idTransporte/documentos/criar-documento",
     component: (
       <RequireAuth>
-        <DocumentosEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Editar Documento",
-    key: "editar-documento",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/documentos/:id/editar-documento",
-    component: (
-      <RequireAuth>
-        <DocumentosEdit />
+        <DocumentosCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },
@@ -170,12 +155,12 @@ const routes = [
     name: "Avisos",
     key: "avisos",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/avisos",
     component: (
       <RequireAuth>
-        <Avisos />
+        <Avisos allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },
@@ -184,37 +169,11 @@ const routes = [
     name: "Criar Aviso",
     key: "criar-aviso",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     route: "/transportes/:idTransporte/avisos/criar-aviso",
     component: (
       <RequireAuth>
-        <AvisosEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Editar Aviso",
-    key: "editar-aviso",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/avisos/:id/editar-aviso",
-    component: (
-      <RequireAuth>
-        <AvisosEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Visualizar Aviso",
-    key: "visualizar-aviso",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/avisos/:id/visualizar-aviso",
-    component: (
-      <RequireAuth>
-        <AvisosView />
+        <AvisosCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },
@@ -276,12 +235,12 @@ const routes = [
     name: "Avaliações",
     key: "avaliacoes",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     icon: <Icon fontSize="small">local_shipping</Icon>,
     route: "/transportes/:idTransporte/avaliacoes",
     component: (
       <RequireAuth>
-        <Avaliacoes />
+        <Avaliacoes allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },
@@ -290,37 +249,11 @@ const routes = [
     name: "Criar Avaliação",
     key: "criar-avaliacao",
     show: false,
-    allowedRoles: ["administrador"],
+    allowedRoles: ["administrador", "supervisor", "motorista"],
     route: "/transportes/:idTransporte/avaliacoes/criar-avaliacao",
     component: (
       <RequireAuth>
-        <AvaliacoesEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Editar Avaliação",
-    key: "editar-avaliacao",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/avaliacoes/:id/editar-avaliacao",
-    component: (
-      <RequireAuth>
-        <AvaliacoesEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Visualizar Avaliação",
-    key: "visualizar-avaliacao",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/avaliacoes/:id/visualizar-avaliacao",
-    component: (
-      <RequireAuth>
-        <AvaliacoesView />
+        <AvaliacoesCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },
