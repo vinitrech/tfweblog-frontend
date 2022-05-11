@@ -37,9 +37,9 @@ import MDButton from "components/MDButton";
 import MDAlert from "components/MDAlert";
 import { useAuth } from "utils/auth";
 
-function DocumentosCreate({ allowedRoles }) {
-  const [titulo, setTitulo] = useState("");
-  const [link, setLink] = useState("");
+function AvaliacoesCreate({ allowedRoles }) {
+  const [descricao, setDescricao] = useState("");
+  const [classificacao, setClassificacao] = useState("");
   const [erroCadastro, setErroCadastro] = useState(false);
   const auth = useAuth();
   const [isLoading, setLoading] = useState(true);
@@ -59,14 +59,14 @@ function DocumentosCreate({ allowedRoles }) {
 
     setErroCadastro(false);
     const cadastro = {
-      titulo,
+      descricao,
       id_usuario: idUsuario,
       id_transporte: parseInt(idTransporte),
-      link,
+      status: classificacao,
     };
 
     if(confirm("Ao criar o registro, suas informações não poderão ser alteradas. Continuar?")){
-      fetch(API_URL + "/transportes/" + idTransporte + "/documentos", {
+      fetch(API_URL + "/transportes/" + idTransporte + "/avaliacoes", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -76,8 +76,8 @@ function DocumentosCreate({ allowedRoles }) {
       })
         .then((res) => {
           if (res.status === 204) {
-            alert("Documento criado com sucesso.");
-            navigate("/transportes/" + idTransporte + "/documentos", { replace: true });
+            alert("Avaliação criada com sucesso.");
+            navigate("/transportes/" + idTransporte + "/avaliacoes", { replace: true });
           } else if (res.status !== 401) {
             setErroCadastro(true);
           } else {
@@ -89,7 +89,7 @@ function DocumentosCreate({ allowedRoles }) {
   };
 
   useEffect(() => {
-    document.title = "TFWebLog - Criar Documento";
+    document.title = "TFWebLog - Criar Avaliação";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -158,10 +158,10 @@ function DocumentosCreate({ allowedRoles }) {
               <MDBox mb={0}>
                 <MDInput
                   type="text"
-                  label="Título"
+                  label="Descrição"
                   fullWidth
                   required
-                  onChange={(e) => setTitulo(e.target.value)}
+                  onChange={(e) => setDescricao(e.target.value)}
                 />
               </MDBox>
             </Grid>
@@ -171,11 +171,11 @@ function DocumentosCreate({ allowedRoles }) {
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={0}>
                 <MDInput
-                  type="url"
+                  type="text"
                   fullWidth
                   required
-                  label="Link"
-                  onChange={(e) => setLink(e.target.value)}
+                  label="Classificação"
+                  onChange={(e) => setClassificacao(e.target.value)}
                 />
               </MDBox>
             </Grid>
@@ -196,4 +196,4 @@ function DocumentosCreate({ allowedRoles }) {
   }
 }
 
-export default DocumentosCreate;
+export default AvaliacoesCreate;

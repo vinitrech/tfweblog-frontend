@@ -49,6 +49,7 @@ import IncidentesEdit from "layouts/incidentes/edit";
 import IncidentesView from "layouts/incidentes/view";
 import Avaliacoes from "layouts/avaliacoes";
 import AvaliacoesCreate from "layouts/avaliacoes/create";
+import AvaliacoesView from "layouts/avaliacoes/view";
 import Categorias from "layouts/categorias";
 import CategoriasCreate from "layouts/categorias/create";
 import CategoriasEdit from "layouts/categorias/edit";
@@ -241,6 +242,20 @@ const routes = [
     component: (
       <RequireAuth>
         <Avaliacoes allowedRoles={["administrador", "supervisor", "motorista"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Visualizar Avaliações",
+    key: "view-avaliacoes",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    icon: <Icon fontSize="small">local_shipping</Icon>,
+    route: "/transportes/:idTransporte/avaliacoes/:id/visualizar",
+    component: (
+      <RequireAuth>
+        <AvaliacoesView allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },

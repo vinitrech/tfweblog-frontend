@@ -42,7 +42,7 @@ import { CircularProgress, Icon } from "@mui/material";
 import MDInput from "components/MDInput";
 import { useAuth } from "utils/auth";
 
-function Documentos({ allowedRoles }) {
+function Avaliacoes({ allowedRoles }) {
   const API_URL = process.env.REACT_APP_API_URL;
   const [isLoading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
@@ -52,15 +52,11 @@ function Documentos({ allowedRoles }) {
 
   const columns = [
     { Header: "identificador", accessor: "identificador", align: "center" },
-    { Header: "titulo", accessor: "titulo", align: "left" },
+    { Header: "descricao", accessor: "descricao", align: "left" },
     { Header: "usuario", accessor: "usuario", align: "left" },
     { Header: "data", accessor: "data", align: "center" },
     { Header: "ações", accessor: "acoes", align: "center", disableSortBy: true },
   ];
-
-  const handleOpenFile = (redirectLink) => {
-    window.open(redirectLink);
-  };
 
   const [rows, setRows] = useState([]);
 
@@ -84,16 +80,18 @@ function Documentos({ allowedRoles }) {
 
       temporaryRows.push({
         identificador: item.id,
-        titulo: item.titulo,
+        descricao: item.descricao,
         usuario: item.usuario,
         data: date,
         acoes: (
           <MDBox className="exportLinkInternal">
-            <MDButton variant="gradient" color="primary" onClick={() => handleOpenFile(item.link)}>
+            <Link to={"/transportes/"+item.id_transporte+"/avaliacoes/"+item.id+"/visualizar"}>
+            <MDButton variant="gradient" color="primary">
               <Icon fontSize="medium" color="inherit">
                 visibility
               </Icon>
             </MDButton>
+            </Link>
           </MDBox>
         ),
       });
@@ -114,7 +112,7 @@ function Documentos({ allowedRoles }) {
 
     fetch(
       API_URL +
-        "/transportes/"+idTransporte+"/documentos?" +
+        "/transportes/"+idTransporte+"/avaliacoes?" +
         new URLSearchParams({
           search: searchInput,
         }),
@@ -142,7 +140,7 @@ function Documentos({ allowedRoles }) {
   };
 
   const buscaItens = () => {
-    fetch(API_URL + "/transportes/" + idTransporte + "/documentos", {
+    fetch(API_URL + "/transportes/" + idTransporte + "/avaliacoes", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -165,7 +163,7 @@ function Documentos({ allowedRoles }) {
   };
 
   useEffect(() => {
-    document.title = "TFWebLog - Documentos";
+    document.title = "TFWebLog - Avaliações";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -204,9 +202,9 @@ function Documentos({ allowedRoles }) {
       <DashboardLayout>
         <DashboardNavbar />
         <MDBox pt={2} className="wrapperHeader">
-          <Link to={"/transportes/"+idTransporte+"/documentos/criar-documento"}>
+          <Link to={"/transportes/"+idTransporte+"/avaliacoes/criar-avaliacao"}>
             <MDButton variant="gradient" color="primary">
-              + Novo Documento
+              + Nova Avaliação
             </MDButton>
           </Link>
 
@@ -256,4 +254,4 @@ function Documentos({ allowedRoles }) {
   }
 }
 
-export default Documentos;
+export default Avaliacoes;
