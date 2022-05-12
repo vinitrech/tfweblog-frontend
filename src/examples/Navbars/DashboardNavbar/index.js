@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /**
 =========================================================
 * Material Dashboard 2 React - v2.1.0
@@ -56,6 +57,21 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
+  const [username, setUsername] = useState("");
+  const API_URL = process.env.REACT_APP_API_URL;
+
+  const buscaUsername = () => {
+    fetch(API_URL + "/getData", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setUsername(json.nome);
+      })
+      .catch();
+  };
+
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -68,6 +84,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
     function handleTransparentNavbar() {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
+
+    buscaUsername();
 
     /** 
      The event listener that's calling the handleTransparentNavbar function when 
@@ -166,7 +184,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                     marginRight: "5px",
                   })}
                 >
-                  Usuário
+                  {username}
                 </MDTypography>
                 <Icon sx={iconsStyle}>account_circle</Icon>
                 <Icon sx={iconsStyle}>expand_more</Icon>

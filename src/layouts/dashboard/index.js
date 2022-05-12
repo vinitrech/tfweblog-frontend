@@ -29,7 +29,7 @@ import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 
 // Data
 import { useEffect, useState } from "react";
-import { CircularProgress } from "@mui/material";
+import { capitalize, CircularProgress } from "@mui/material";
 import { useAuth } from "utils/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -39,31 +39,20 @@ function Dashboard() {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const { incidentes, setIncidentes } = useState({
-    labels: ["1", "2", "5", "6", "9", "15", "19", "20", "21"],
-    datasets: { label: "Incidentes", data: [4, 1, 3, 6, 4, 2, 2, 3, 7] },
-  });
+  const [incidentes, setIncidentes] = useState({});
 
-  const clientes = {
-    labels: ["Nov", "Dez", "Jan", "Fev", "Mar", "Abr"],
-    datasets: { label: "Clientes", data: [10, 25, 15, 10, 15, 20] },
-  };
+  const [transportes, setTransportes] = useState({});
 
-  const motoristas = {
-    labels: ["Novos motoristas", "Motoristas desligados"],
-    datasets: { label: "Novos motoristas", data: [11, 4] },
-  };
-  const transportes = {
-    labels: ["Criados", "Em andamento", "Finalizados", "Cancelados", "Em espera"],
-    datasets: { label: "Transportes", data: [11, 4, 7, 3, 6] },
-  };
+  const [transportesPorCliente, setTransportesPorCliente] = useState({});
+
+  const [transportesPorMotorista, setTransportesPorMotorista] = useState({});
 
   const handleLogout = () => {
     auth.logout();
     navigate("/login", { replace: true });
   };
 
-  const buscaItem = () => {
+  const buscaIncidentes = () => {
     fetch(API_URL + "/getIncidentes", {
       method: "GET",
       headers: {
@@ -74,8 +63,99 @@ function Dashboard() {
       .then((response) => {
         if (response.status !== 401) {
           response.json().then((resultItem) => {
-            setIncidentes(resultItem);
-            setLoading(false);
+            const temporaryItem = {
+              labels: resultItem.map((item) => item.id_transporte),
+              datasets: {
+                label: "Incidentes",
+                data: resultItem.map((item) => item.incidentes),
+              },
+            };
+
+            setIncidentes(temporaryItem);
+          });
+        } else {
+          handleLogout();
+        }
+      })
+      .catch();
+  };
+
+  const buscaTransportes = () => {
+    fetch(API_URL + "/getTransportesStatus", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((response) => {
+        if (response.status !== 401) {
+          response.json().then((resultItem) => {
+            const temporaryTransporte = {
+              labels: resultItem.map((item) => capitalize(item.status)),
+              datasets: {
+                label: "Quantidade",
+                data: resultItem.map((item) => item.quantidade),
+              },
+            };
+
+            setTransportes(temporaryTransporte);
+          });
+        } else {
+          handleLogout();
+        }
+      })
+      .catch();
+  };
+
+  const buscaTransportesPorCliente = () => {
+    fetch(API_URL + "/getTransportesPorCliente", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((response) => {
+        if (response.status !== 401) {
+          response.json().then((resultItem) => {
+            const temporaryTransportesPorCliente = {
+              labels: resultItem.map((item) => item.cliente),
+              datasets: {
+                label: "Quantidade",
+                data: resultItem.map((item) => item.quantidade),
+              },
+            };
+
+            setTransportesPorCliente(temporaryTransportesPorCliente);
+          });
+        } else {
+          handleLogout();
+        }
+      })
+      .catch();
+  };
+
+  const buscaTransportesPorMotorista = () => {
+    fetch(API_URL + "/getTransportesPorMotorista", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+      .then((response) => {
+        if (response.status !== 401) {
+          response.json().then((resultItem) => {
+            const temporaryTransportesPorMotorista = {
+              labels: resultItem.map((item) => item.motorista),
+              datasets: {
+                label: "Quantidade",
+                data: resultItem.map((item) => item.quantidade),
+              },
+            };
+
+            setTransportesPorMotorista(temporaryTransportesPorMotorista);
           });
         } else {
           handleLogout();
@@ -87,7 +167,11 @@ function Dashboard() {
   useEffect(() => {
     document.title = "TFWebLog - Dashboard";
 
-    buscaItem();
+    buscaIncidentes();
+    buscaTransportes();
+    buscaTransportesPorCliente();
+    buscaTransportesPorMotorista();
+    setLoading(false);
   }, []);
 
   if (isLoading) {
@@ -119,8 +203,7 @@ function Dashboard() {
                   <ReportsBarChart
                     color="info"
                     title="Transportes"
-                    description="Status dos transportes no período especificado"
-                    date="atualizado há 1 hora"
+                    description="Número de transportes para cada status."
                     chart={transportes}
                   />
                 </MDBox>
@@ -130,8 +213,7 @@ function Dashboard() {
                   <ReportsLineChart
                     color="success"
                     title="Incidentes"
-                    description="Número de incidentes ocorridos por transporte no período especificado"
-                    date="atualizado há 2 horas"
+                    description="Número de incidentes ocorridos por transporte."
                     chart={incidentes}
                   />
                 </MDBox>
@@ -140,10 +222,9 @@ function Dashboard() {
                 <MDBox mb={3}>
                   <ReportsLineChart
                     color="dark"
-                    title="Novos clientes"
-                    description="Número de novos clientes no período especificado"
-                    date="atualizado há 2 dias"
-                    chart={clientes}
+                    title="Transportes por cliente"
+                    description="Número de transportes cadastrados para cada cliente."
+                    chart={transportesPorCliente}
                   />
                 </MDBox>
               </Grid>
@@ -151,10 +232,9 @@ function Dashboard() {
                 <MDBox mb={3}>
                   <ReportsBarChart
                     color="secondary"
-                    title="Cadastros de Motoristas"
-                    description="Cadastros e desligamentos de motoristas no período especificado"
-                    date="atualizado há 13 dias"
-                    chart={motoristas}
+                    title="Transportes por motorista"
+                    description="Número de transportes cadastrados para cada motorista."
+                    chart={transportesPorMotorista}
                   />
                 </MDBox>
               </Grid>
