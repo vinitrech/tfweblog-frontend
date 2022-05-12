@@ -42,10 +42,12 @@ import TransportesCreate from "layouts/transportes/create";
 import TransportesEdit from "layouts/transportes/edit";
 import Documentos from "layouts/documentos";
 import DocumentosCreate from "layouts/documentos/create";
+
 import Avisos from "layouts/avisos";
-import AvisosCreate from "layouts/avisos/edit";
+import AvisosCreate from "layouts/avisos/create";
+import AvisosView from "layouts/avisos/view";
 import Incidentes from "layouts/incidentes";
-import IncidentesEdit from "layouts/incidentes/edit";
+import IncidentesCreate from "layouts/incidentes/create";
 import IncidentesView from "layouts/incidentes/view";
 import Avaliacoes from "layouts/avaliacoes";
 import AvaliacoesCreate from "layouts/avaliacoes/create";
@@ -148,86 +150,6 @@ const routes = [
     component: (
       <RequireAuth>
         <DocumentosCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Avisos",
-    key: "avisos",
-    show: false,
-    allowedRoles: ["administrador", "supervisor", "motorista"],
-    icon: <Icon fontSize="small">local_shipping</Icon>,
-    route: "/transportes/:idTransporte/avisos",
-    component: (
-      <RequireAuth>
-        <Avisos allowedRoles={["administrador", "supervisor", "motorista"]} />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Criar Aviso",
-    key: "criar-aviso",
-    show: false,
-    allowedRoles: ["administrador", "supervisor", "motorista"],
-    route: "/transportes/:idTransporte/avisos/criar-aviso",
-    component: (
-      <RequireAuth>
-        <AvisosCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Incidentes",
-    key: "incidentes",
-    show: false,
-    allowedRoles: ["administrador"],
-    icon: <Icon fontSize="small">local_shipping</Icon>,
-    route: "/transportes/:idTransporte/incidentes",
-    component: (
-      <RequireAuth>
-        <Incidentes />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Criar Incidente",
-    key: "criar-incidente",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/incidentes/criar-incidente",
-    component: (
-      <RequireAuth>
-        <IncidentesEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Editar Incidente",
-    key: "editar-incidente",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/incidentes/:id/editar-incidente",
-    component: (
-      <RequireAuth>
-        <IncidentesEdit />
-      </RequireAuth>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Visualizar Incidente",
-    key: "visualizar-incidente",
-    show: false,
-    allowedRoles: ["administrador"],
-    route: "/transportes/:idTransporte/incidentes/:id/visualizar-incidente",
-    component: (
-      <RequireAuth>
-        <IncidentesView />
       </RequireAuth>
     ),
   },
@@ -376,6 +298,88 @@ const routes = [
     component: (
       <RequireAuth>
         <VeiculosCreate allowedRoles={["administrador", "supervisor"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Avisos",
+    key: "avisos",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    icon: <Icon fontSize="small">local_shipping</Icon>,
+    route: "/transportes/:idTransporte/avisos",
+    component: (
+      <RequireAuth>
+        <Avisos allowedRoles={["administrador", "supervisor", "motorista"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Visualizar Avisos",
+    key: "view-avisos",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    icon: <Icon fontSize="small">local_shipping</Icon>,
+    route: "/transportes/:idTransporte/avisos/:id/visualizar",
+    component: (
+      <RequireAuth>
+        <AvisosView allowedRoles={["administrador", "supervisor", "motorista"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Criar Aviso",
+    key: "criar-aviso",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    route: "/transportes/:idTransporte/avisos/criar-aviso",
+    component: (
+      <RequireAuth>
+        <AvisosCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Incidentes",
+    key: "incidentes",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    icon: <Icon fontSize="small">local_shipping</Icon>,
+    route: "/transportes/:idTransporte/incidentes",
+    component: (
+      <RequireAuth>
+        <Incidentes allowedRoles={["administrador", "supervisor", "motorista"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Visualizar Incidentes",
+    key: "view-incidentes",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    icon: <Icon fontSize="small">local_shipping</Icon>,
+    route: "/transportes/:idTransporte/incidentes/:id/visualizar",
+    component: (
+      <RequireAuth>
+        <IncidentesView allowedRoles={["administrador", "supervisor", "motorista"]} />
+      </RequireAuth>
+    ),
+  },
+  {
+    type: "collapse",
+    name: "Criar Aviso",
+    key: "criar-aviso",
+    show: false,
+    allowedRoles: ["administrador", "supervisor", "motorista"],
+    route: "/transportes/:idTransporte/incidentes/criar-incidente",
+    component: (
+      <RequireAuth>
+        <IncidentesCreate allowedRoles={["administrador", "supervisor", "motorista"]} />
       </RequireAuth>
     ),
   },

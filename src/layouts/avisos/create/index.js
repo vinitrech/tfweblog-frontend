@@ -37,9 +37,9 @@ import MDButton from "components/MDButton";
 import MDAlert from "components/MDAlert";
 import { useAuth } from "utils/auth";
 
-function AvaliacoesCreate({ allowedRoles }) {
+function AvisosCreate({ allowedRoles }) {
   const [descricao, setDescricao] = useState("");
-  const [classificacao, setClassificacao] = useState("");
+  const [link, setLink] = useState("");
   const [erroCadastro, setErroCadastro] = useState(false);
   const auth = useAuth();
   const [isLoading, setLoading] = useState(true);
@@ -62,11 +62,11 @@ function AvaliacoesCreate({ allowedRoles }) {
       descricao,
       id_usuario: idUsuario,
       id_transporte: parseInt(idTransporte),
-      status: classificacao,
+      link,
     };
 
     if(confirm("Ao criar o registro, suas informações não poderão ser alteradas. Continuar?")){
-      fetch(API_URL + "/transportes/" + idTransporte + "/avaliacoes", {
+      fetch(API_URL + "/transportes/" + idTransporte + "/avisos", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -76,8 +76,8 @@ function AvaliacoesCreate({ allowedRoles }) {
       })
         .then((res) => {
           if (res.status === 204) {
-            alert("Avaliação criada com sucesso.");
-            navigate("/transportes/" + idTransporte + "/avaliacoes", { replace: true });
+            alert("Aviso criado com sucesso.");
+            navigate("/transportes/" + idTransporte + "/avisos", { replace: true });
           } else if (res.status !== 401) {
             setErroCadastro(true);
           } else {
@@ -89,7 +89,7 @@ function AvaliacoesCreate({ allowedRoles }) {
   };
 
   useEffect(() => {
-    document.title = "TFWebLog - Criar Avaliação";
+    document.title = "TFWebLog - Criar Aviso";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -172,11 +172,11 @@ function AvaliacoesCreate({ allowedRoles }) {
             <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={0}>
                 <MDInput
-                  type="text"
+                  type="url"
                   fullWidth
                   required
-                  label="Classificação"
-                  onChange={(e) => setClassificacao(e.target.value)}
+                  label="Link"
+                  onChange={(e) => setLink(e.target.value)}
                 />
               </MDBox>
             </Grid>
@@ -197,4 +197,4 @@ function AvaliacoesCreate({ allowedRoles }) {
   }
 }
 
-export default AvaliacoesCreate;
+export default AvisosCreate;

@@ -80,7 +80,7 @@ function Avaliacoes({ allowedRoles }) {
 
       temporaryRows.push({
         identificador: item.id,
-        descricao: item.descricao,
+        descricao: item.descricao.substr(0, 30) + "...",
         usuario: item.usuario,
         data: date,
         acoes: (

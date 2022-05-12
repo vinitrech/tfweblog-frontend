@@ -28,9 +28,10 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 // Data
 import { useEffect, useState } from "react";
 import { CircularProgress, Grid } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "utils/auth";
 import MDTypography from "components/MDTypography";
+import MDButton from "components/MDButton";
 
 function AvaliacoesView({ allowedRoles }) {
   const [descricao, setDescricao] = useState("");
@@ -69,7 +70,7 @@ function AvaliacoesView({ allowedRoles }) {
   };
 
   useEffect(() => {
-    document.title = "TFWebLog - Editar Categoria";
+    document.title = "TFWebLog - Visualizar Incidente";
 
     fetch(API_URL + "/getData", {
       method: "GET",
@@ -126,14 +127,14 @@ function AvaliacoesView({ allowedRoles }) {
                     fontWeight: "bold",
                   })}
                 >
-                  Descrição: {descricao}
+                  Descrição
                 </MDTypography>
                 <MDTypography
                   color="primary"
                   sx={() => ({
                     fontSize: "14px",
                     marginLeft: "5px",
-                    marginBottom: "10px",
+                    marginBottom: "30px",
                     fontWeight: "300",
                   })}
                 >
@@ -149,7 +150,7 @@ function AvaliacoesView({ allowedRoles }) {
                     fontWeight: "bold",
                   })}
                 >
-                  Classificação:
+                  Classificação
                 </MDTypography>
 
                 <MDTypography
@@ -157,12 +158,18 @@ function AvaliacoesView({ allowedRoles }) {
                   sx={() => ({
                     fontSize: "14px",
                     marginLeft: "5px",
-                    marginBottom: "10px",
+                    marginBottom: "30px",
                     fontWeight: "300",
                   })}
                 >
                   {classificacao}
                 </MDTypography>
+
+                <Link to={"/transportes/" + idTransporte + "/avaliacoes"}>
+                  <MDButton variant="gradient" color="primary">
+                    Voltar
+                  </MDButton>
+                </Link>
               </MDBox>
             </Grid>
           </Grid>
